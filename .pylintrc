@@ -1,2 +1,0 @@
-[pylint]
-disable=invalid-name,too-many-arguments,duplicate-code,arguments-differ,super-init-not-called
