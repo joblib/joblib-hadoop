@@ -1,7 +1,7 @@
 """Test the backend registration functions"""
 
-from joblibstore import register_hdfs_store_backend
-from joblibstore.hdfs_backend import HDFSStoreBackend
+from joblibhadoop.hdfs import register_hdfs_store_backend
+from joblibhadoop.hdfs.backend import HDFSStoreBackend
 from joblib.memory import _STORE_BACKENDS
 
 
