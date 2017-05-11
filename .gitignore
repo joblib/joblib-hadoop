@@ -36,3 +36,5 @@ doc/README.rst
 .coverage
 # Pytest
 .cache
+# Python cache
+__pycache__
