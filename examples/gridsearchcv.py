@@ -16,7 +16,8 @@ sections on :ref:`cross_validation` and :ref:`grid_search`.
 
 """
 
-from joblib.parallel import register_parallel_backend
+from sklearn.externals.joblib.parallel import (register_parallel_backend,
+                                               parallel_backend)
 from joblibhadoop.yarn import YarnBackend
 
 from sklearn import datasets
@@ -24,6 +25,8 @@ from sklearn.cross_validation import train_test_split
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
 from sklearn.svm import SVC
+
+register_parallel_backend("yarn", YarnBackend)
 
 print(__doc__)
 
@@ -47,8 +50,6 @@ tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
 
 scores = ['precision', 'recall']
 
-register_parallel_backend("default", YarnBackend)
-
 """ Back to scikit gridcv example """
 
 for score in scores:
@@ -56,7 +57,8 @@ for score in scores:
 
     clf = GridSearchCV(SVC(C=1), tuned_parameters, cv=5,
                        scoring='%s_weighted' % score, n_jobs=4)
-    clf.fit(X_train, y_train)
+    with parallel_backend('yarn'):
+        clf.fit(X_train, y_train)
 
     print("Best parameters set found on development set:")
     print()
