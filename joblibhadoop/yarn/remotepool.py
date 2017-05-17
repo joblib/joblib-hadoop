@@ -64,7 +64,7 @@ class RemotePool(Pool):
         QueueManager.register('add_worker', callable=self._add_worker)
         QueueManager.register('remove_worker', callable=self._remove_worker)
 
-        m = QueueManager(address=('', port), authkey=self.authkey)
+        m = QueueManager(address=('', port), authkey=self.authkey.encode())
         self.s = m.get_server()
 
         self.t = Thread(target=self.s.serve_forever)
@@ -73,13 +73,7 @@ class RemotePool(Pool):
 
         self.worker_index = 0
         self.workerscript = workerscript
-
-        if sys.version_info[0] == 2 and sys.version_info[1] == 6:
-            super(RemotePool, self).__init__(processes=0)
-            self._processes = processes
-            self._repopulate_pool()
-        else:
-            super(RemotePool, self).__init__(processes=processes)
+        super(RemotePool, self).__init__(processes=processes)
 
     def _add_worker(self, pid):
         for worker in self._pool:

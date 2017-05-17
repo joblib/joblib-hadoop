@@ -14,9 +14,9 @@ class YarnBackend(ThreadingBackend):
 
         return n_jobs
 
-    def initialize(self, n_jobs, poolargs):
+    def configure(self, n_jobs, parallel=None, **kwargs):
         """Initialize the backend."""
-        self._pool = YarnPool(n_jobs)
+        self._pool = YarnPool(processes=n_jobs)
         return n_jobs
 
     def get_exceptions(self):

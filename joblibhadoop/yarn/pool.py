@@ -11,7 +11,6 @@ class YarnPool(RemotePool):
                                        authkey=authkey,
                                        workerscript=None)
         self.stopping = False
-
         from knit import Knit
         self.k = Knit(autodetect=True)
 
@@ -28,14 +27,7 @@ class YarnPool(RemotePool):
         rw = RemoteWorker(pid)
         self._pool.append(rw)
 
-    def spinning_cursor(self):
-        while True:
-            for cursor in '|/-\\':
-                yield cursor
-
     def _monitor_appid(self):
-        # not used:
-        # cursor = self.spinning_cursor()
         while not self.stopping:
             try:
                 status = self.k.status(self.app_id)
