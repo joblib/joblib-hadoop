@@ -35,8 +35,11 @@ full support of the HDFS store backends.
 
 ..  code-block:: bash
 
-    $ conda create -n joblibhadoop-env python==3.5 s3fs libhdfs3 -c conda-forge
+    $ conda create -n joblibhadoop-env python==3.5 libhdfs3 -c conda-forge
     $ . activate joblibhadoop-env
+
+We recommend using anaconda because it provides a pre-built version of
+libhdfs3. See build_libhdfs3_ if you want to install it using pip.
 
 2. From the `joblibhadoop-env` environment, perform installation using pip:
 
@@ -132,8 +135,10 @@ Running the test suite
     $ pytest
 
 
-Installing the hdfs3 package by hand
-====================================
+.. _build_libhdfs3:
+
+Building and installing the hdfs3 package by hand
+=================================================
 
 For the moment hdfs3 cannot be directly installed using pip : the reason is
 because hdfs3 depends on a C++ based library that is not available in the
