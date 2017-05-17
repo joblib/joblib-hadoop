@@ -16,6 +16,7 @@ if __name__ == '__main__':
           packages=find_packages(),
           install_requires=[
             'joblib>=0.10',
+            'knit>=0.2'
           ],
           zip_safe=False,
           )
