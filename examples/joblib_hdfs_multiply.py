@@ -1,4 +1,4 @@
-"""Example showing how to use joblib-store to cache results in a HDFS store."""
+"""Example showing how to use joblib-hadoop with an HDFS store"""
 
 import numpy as np
 from joblib import Memory
