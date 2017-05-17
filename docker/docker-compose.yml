@@ -17,6 +17,8 @@ services:
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:1.1.0-hadoop2.7.1-java8
     container_name: resourcemanager
+    ports:
+        - "8032:8032"
     depends_on:
       - namenode
       - datanode1
