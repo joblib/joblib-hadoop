@@ -19,6 +19,7 @@ services:
     container_name: resourcemanager
     ports:
         - "8032:8032"
+        - "8088:8088"
     depends_on:
       - namenode
       - datanode1
@@ -41,9 +42,6 @@ services:
   nodemanager1:
     image: bde2020/hadoop-nodemanager:1.1.0-hadoop2.7.1-java8
     container_name: nodemanager1
-    ports:
-      - "8088:8088"
-      - "50090:50090"
     depends_on:
       - namenode
       - datanode1
