@@ -19,8 +19,6 @@ services:
     image: bde2020/hadoop-resourcemanager:1.1.0-hadoop2.7.1-java8
     container_name: resourcemanager
     build: resourcemanager/.
-    volumes:
-      - /home:/home
     ports:
         - "8032:8032"
         - "8088:8088"
