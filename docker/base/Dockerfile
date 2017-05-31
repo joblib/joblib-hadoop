@@ -40,7 +40,7 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys \
     0445B7BFC4515847C157ECD16BA72FF1C99785DE \
     B74F188889D159F3D7E64A7F348C6D7A0DCED714 \
     4A6AC5C675B6155682729C9E08D51A0A7501105C \
-    8B44A05C308955D191956559A5CEE20A90348D47 
+    8B44A05C308955D191956559A5CEE20A90348D47
 
 RUN gpg --keyserver pool.sks-keyservers.net --recv-key C36C5F0F
 
@@ -52,7 +52,7 @@ RUN set -x \
     && gpg --verify /tmp/hadoop.tar.gz.asc \
     && tar -xvf /tmp/hadoop.tar.gz -C /opt/ \
     && rm /tmp/hadoop.tar.gz*
-    
+
 RUN ln -s /opt/hadoop-$HADOOP_VERSION/etc/hadoop /etc/hadoop
 RUN cp /etc/hadoop/mapred-site.xml.template /etc/hadoop/mapred-site.xml
 RUN mkdir /opt/hadoop-$HADOOP_VERSION/logs

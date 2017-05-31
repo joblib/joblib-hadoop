@@ -4,19 +4,23 @@ services:
   namenode:
     image: bde2020/hadoop-namenode:1.1.0-hadoop2.7.1-java8
     container_name: namenode
+    build: namenode/.
     ports:
         - "8020:8020"
         - "50070:50070"
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
     environment:
-      - CLUSTER_NAME=test
+      - CLUSTER_NAME=joblib-test
     env_file:
       - ./hadoop.env
 
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:1.1.0-hadoop2.7.1-java8
     container_name: resourcemanager
+    build: resourcemanager/.
+    volumes:
+      - /home:/home
     ports:
         - "8032:8032"
         - "8088:8088"
@@ -29,6 +33,7 @@ services:
 
   historyserver:
     image: bde2020/hadoop-historyserver:1.1.0-hadoop2.7.1-java8
+    build: historyserver/.
     container_name: historyserver
     depends_on:
       - namenode
@@ -39,9 +44,12 @@ services:
     env_file:
       - ./hadoop.env
 
-  nodemanager1:
+  nodemanager:
     image: bde2020/hadoop-nodemanager:1.1.0-hadoop2.7.1-java8
-    container_name: nodemanager1
+    container_name: nodemanager
+    build: nodemanager/.
+    volumes:
+      - /home:/home
     depends_on:
       - namenode
       - datanode1
@@ -52,6 +60,7 @@ services:
   datanode1:
     image: bde2020/hadoop-datanode:1.1.0-hadoop2.7.1-java8
     container_name: datanode1
+    build: datanode/.
     depends_on:
       - namenode
     volumes:
@@ -62,6 +71,7 @@ services:
   datanode2:
     image: bde2020/hadoop-datanode:1.1.0-hadoop2.7.1-java8
     container_name: datanode2
+    build: datanode/.
     depends_on:
       - namenode
     volumes:
@@ -72,6 +82,7 @@ services:
   datanode3:
     image: bde2020/hadoop-datanode:1.1.0-hadoop2.7.1-java8
     container_name: datanode3
+    build: datanode/.
     depends_on:
       - namenode
     volumes:
