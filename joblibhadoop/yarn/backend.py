@@ -8,15 +8,19 @@ class YarnBackend(ThreadingBackend):
 
     def effective_n_jobs(self, n_jobs):
         """Return the number of effective jobs running in the backend."""
-        # TODO: add support -1, -2 etc.
+        if n_jobs == 0:
+            raise ValueError('n_jobs == 0 in Parallel has no meaning')
         if n_jobs < 0:
+            # TODO: add support -1, -2 etc.
             raise ValueError('n_jobs < 0 is not implemented yet')
 
         return n_jobs
 
     def configure(self, n_jobs, parallel=None, **kwargs):
         """Initialize the backend."""
+        n_jobs = self.effective_n_jobs(n_jobs)
         self._pool = YarnPool(processes=n_jobs)
+        self.parallel = parallel
         return n_jobs
 
     def get_exceptions(self):

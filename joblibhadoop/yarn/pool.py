@@ -1,6 +1,7 @@
 from .remotepool import RemotePool, RemoteWorker
 from threading import Thread
 from time import sleep
+from knit import Knit
 
 
 class YarnPool(RemotePool):
@@ -11,13 +12,12 @@ class YarnPool(RemotePool):
                                        authkey=authkey,
                                        workerscript=None)
         self.stopping = False
-        from knit import Knit
         self.k = Knit(autodetect=True)
 
-        cmd = ("python remoteworker.py --port {} --key {}"
+        cmd = ('python remoteworker.py --port {} --key {}'
                .format(self.s.address[1], self.authkey))
         self.app_id = self.k.start(cmd,
-                                   self._processes,
+                                   num_containers=self._processes,
                                    files=['remoteworker.py', ])
         self.t = Thread(target=self._monitor_appid)
         self.t.deamon = True

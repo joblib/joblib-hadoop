@@ -1,4 +1,3 @@
-import sys
 import random
 import string
 from time import sleep
@@ -100,11 +99,11 @@ class RemotePool(Pool):
         for _ in range(self._processes - len(self._pool)):
             self.worker_index += 1
             self._start_remote_worker(self.worker_index)
-            debug('added worker')
+            print('added worker')
 
     def _start_remote_worker(self, pid):
         rw = RemoteWorker(pid)
-        debug('starting remote worker %d', pid)
+        print('starting remote worker %d', pid)
 
         args = ['python', self.workerscript]
         args.append('--port')
@@ -130,5 +129,5 @@ class RemotePool(Pool):
             if self.s.number_of_objects(None) == 0:
                 break
 
-            debug('waiting for objects to be dereferenced')
+            print('waiting for objects to be dereferenced')
             sleep(0.1)
