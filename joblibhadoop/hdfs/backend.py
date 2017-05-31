@@ -56,7 +56,7 @@ class HDFSStoreBackend(StoreBackendBase, StoreManagerMixin):
 
         return cache_items
 
-    def configure(self, location, host=None, port=None, user=None,
+    def configure(self, location, host='localhost', port=9000, user=None,
                   ticket_cache=None, token=None, pars=None, connect=True,
                   **kwargs):
         """Configure the store backend."""

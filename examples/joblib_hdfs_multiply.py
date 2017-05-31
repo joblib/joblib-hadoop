@@ -8,7 +8,7 @@ if __name__ == '__main__':
     register_hdfs_store_backend()
 
     mem = Memory(location='joblib_cache_hdfs',
-                 backend='hdfs', host='localhost', port=8020, user='test',
+                 backend='hdfs', host='localhost', port=9000, user='test',
                  verbose=100, compress=True)
     mem.clear()
     multiply = mem.cache(np.multiply)

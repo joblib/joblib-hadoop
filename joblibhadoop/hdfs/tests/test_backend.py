@@ -30,8 +30,7 @@ def test_store_and_retrieve(capsys, tmpdir, compress, arg):
     register_hdfs_store_backend()
 
     mem = Memory(location=tmpdir.strpath[1:],
-                 backend='hdfs', host='localhost', port=8020, user='test',
-                 verbose=0, compress=compress)
+                 backend='hdfs', user='test', verbose=0, compress=compress)
 
     assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
 
@@ -68,8 +67,7 @@ def test_root_location_replacement(tmpdir):
     register_hdfs_store_backend()
 
     mem = Memory(location=location,
-                 backend='hdfs', host='localhost', port=8020, user='test',
-                 verbose=100)
+                 backend='hdfs', user='test', verbose=100)
 
     assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
 
@@ -80,14 +78,12 @@ def test_passing_backend_base_to_memory(tmpdir):
     register_hdfs_store_backend()
 
     mem = Memory(location=tmpdir.strpath,
-                 backend='hdfs', host='localhost', port=8020, user='test',
-                 verbose=100)
+                 backend='hdfs', user='test', verbose=100)
 
     assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
 
     mem2 = Memory(location=mem.store,
-                  backend='hdfs', host='localhost', port=8020, user='test',
-                  verbose=100)
+                  backend='hdfs', user='test', verbose=100)
 
     assert mem2.store.cachedir == mem.store.cachedir
 
@@ -102,8 +98,7 @@ def test_clear_cache(tmpdir):
     register_hdfs_store_backend()
 
     mem = Memory(location=tmpdir.strpath,
-                 backend='hdfs', host='localhost', port=8020, user='test',
-                 verbose=100, compress=False)
+                 backend='hdfs', user='test', verbose=100, compress=False)
     cached_func = mem.cache(func)
     cached_func("test")
 
@@ -121,8 +116,7 @@ def test_get_cache_items(tmpdir):
     register_hdfs_store_backend()
 
     mem = Memory(location=tmpdir.strpath,
-                 backend='hdfs', host='localhost', port=8020, user='test',
-                 verbose=100, compress=False)
+                 backend='hdfs', user='test', verbose=100, compress=False)
     assert not mem.store.get_cache_items()
 
     cached_func = mem.cache(func)
