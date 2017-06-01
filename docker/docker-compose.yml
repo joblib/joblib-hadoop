@@ -2,6 +2,7 @@ version: "2"
 
 services:
   namenode:
+    image: bde2020/hadoop-namenode:1.1.0-hadoop2.7.1-java8
     container_name: namenode
     build: namenode/.
     ports:
@@ -47,8 +48,6 @@ services:
     build: nodemanager/.
     ports:
         - "8042:8042"
-    volumes:
-      - /home:/home
     depends_on:
       - namenode
       - datanode1
