@@ -1,10 +1,13 @@
-from .remotepool import RemotePool, RemoteWorker
+"""Yarn pool module."""
+
 from threading import Thread
 from time import sleep
 from knit import Knit
+from .remotepool import RemotePool, RemoteWorker
 
 
 class YarnPool(RemotePool):
+    """The Yarn Pool mananger."""
 
     def __init__(self, processes=None, port=0, authkey=None):
         super(YarnPool, self).__init__(processes=processes,
@@ -18,19 +21,19 @@ class YarnPool(RemotePool):
                .format(self.s.address[1], self.authkey))
         self.app_id = self.k.start(cmd,
                                    num_containers=self._processes,
-                                   files=['remoteworker.py', ])
+                                   files=['joblibhadoop/yarn/remoteworker.py', ])
         self.t = Thread(target=self._monitor_appid)
         self.t.deamon = True
         self.t.start()
 
     def _start_remote_worker(self, pid):
-        rw = RemoteWorker(pid)
-        self._pool.append(rw)
+        remote_worker = RemoteWorker(pid)
+        self._pool.append(remote_worker)
 
     def _monitor_appid(self):
         while not self.stopping:
             try:
-                status = self.k.status(self.app_id)
+                status = self.k.status()
                 yarn_state = status['app']['state']
                 print("YARN application is {}".format(yarn_state))
             except:

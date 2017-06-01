@@ -102,7 +102,7 @@ class RemotePool(Pool):
             print('added worker')
 
     def _start_remote_worker(self, pid):
-        rw = RemoteWorker(pid)
+        remote_worker = RemoteWorker(pid)
         print('starting remote worker %d', pid)
 
         args = ['python', self.workerscript]
@@ -113,8 +113,8 @@ class RemotePool(Pool):
         args.append('--key')
         args.append(self.authkey)
 
-        rw.proc = subprocess.Popen(args)
-        self._pool.append(rw)
+        remote_worker.proc = subprocess.Popen(args)
+        self._pool.append(remote_worker)
 
     def terminate(self):
         """Stop this Pool.
