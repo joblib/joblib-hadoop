@@ -15,4 +15,4 @@ if __name__ == '__main__':
 
     # Should be executed in parallel locally
     print(Parallel(verbose=100, n_jobs=5)(
-        delayed(sqrt)(i**2) for i in range(100))
+        delayed(sqrt)(i**2) for i in range(100)))
