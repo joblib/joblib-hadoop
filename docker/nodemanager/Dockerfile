@@ -8,6 +8,7 @@ RUN apt-get update -yqq  && apt-get install -yqq \
   bzip2 \
   git \
   libglib2.0-0 \
+  vim \
   && rm -rf /var/lib/apt/lists/*
 
 # Configure environment
@@ -23,21 +24,20 @@ RUN wget -O miniconda.sh \
 
 ENV PATH="/work/bin:/work/miniconda/bin:$PATH"
 
-RUN conda install -y \
-  pip \
-  setuptools \
-  notebook \
-  ipywidgets \
-  psutil \
-&& conda clean -tipsy
+COPY python3.5.yml /work/python3.5.yml
+RUN conda env create -n py35 -f python3.5.yml
+RUN conda install -n py35 -c clinicalgraphics libgcrypt11
 
-RUN pip install pip --upgrade
-RUN pip install knit distributed
+ENV PATH /work/miniconda/envs/py35/bin:$PATH
 
-ADD run.sh /run.sh
-RUN chmod a+x /run.sh
+RUN git clone https://github.com/joblib/joblib-hadoop.git
+RUN cd joblib-hadoop && pip install -r requirements.txt .
 
 EXPOSE 8042
 EXPOSE 8080
+
+# Start yarn
+ADD run.sh /run.sh
+RUN chmod a+x /run.sh
 
 CMD ["/run.sh"]

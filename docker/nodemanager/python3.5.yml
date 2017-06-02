@@ -1,0 +1,12 @@
+name: py35
+channels:
+  - dask
+dependencies:
+  - python=3.5
+  - setuptools
+  - ipython
+  - distributed
+  - libhdfs3
+  - hdfs3
+  - knit
+  - pip
