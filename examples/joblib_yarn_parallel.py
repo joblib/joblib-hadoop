@@ -7,6 +7,12 @@ from joblibhadoop.yarn import YarnBackend
 
 if __name__ == '__main__':
     register_parallel_backend('yarn', YarnBackend)
-    with parallel_backend('yarn', n_jobs=1):
-        Parallel(verbose=100)(
-            delayed(sqrt)(i**2) for i in range(100))
+
+    # Run in parallel using Yarn backend
+    with parallel_backend('yarn', n_jobs=5):
+        print(Parallel(verbose=100)(
+            delayed(sqrt)(i**2) for i in range(100)))
+
+    # Should be executed in parallel locally
+    print(Parallel(verbose=100, n_jobs=5)(
+        delayed(sqrt)(i**2) for i in range(100))
