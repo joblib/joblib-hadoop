@@ -38,6 +38,6 @@ ADD run.sh /run.sh
 RUN chmod a+x /run.sh
 
 EXPOSE 8042
-EXPOSE 8786
+EXPOSE 8080
 
 CMD ["/run.sh"]

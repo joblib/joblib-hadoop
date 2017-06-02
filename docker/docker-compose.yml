@@ -46,8 +46,6 @@ services:
     image: joblibhadoop/hadoop-nodemanager:1.1.0-hadoop2.7.1-java8
     container_name: nodemanager
     build: nodemanager/.
-    ports:
-        - "8042:8042"
     depends_on:
       - namenode
       - datanode1
