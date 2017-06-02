@@ -15,13 +15,13 @@ class YarnPool(RemotePool):
                                        authkey=authkey,
                                        workerscript=None)
         self.stopping = False
-        self.k = Knit(autodetect=True)
+        self.knit = Knit(autodetect=True)
 
         cmd = ('python remoteworker.py --port {} --key {}'
                .format(self.server.address[1], self.authkey))
-        self.app_id = self.k.start(cmd,
-                                   num_containers=self._processes,
-                                   files=['joblibhadoop/yarn/remoteworker.py', ])
+        self.app_id = self.knit.start(
+            cmd, num_containers=self._processes,
+            files=['joblibhadoop/yarn/remoteworker.py', ])
         self.thread = Thread(target=self._monitor_appid)
         self.thread.deamon = True
         self.thread.start()
@@ -33,9 +33,11 @@ class YarnPool(RemotePool):
     def _monitor_appid(self):
         while not self.stopping:
             try:
-                status = self.k.status()
+                status = self.knit.status()
                 yarn_state = status['app']['state']
                 print("YARN application is {}".format(yarn_state))
+                if yarn_state == 'FINISHED':
+                    self.terminate()
             except:
                 pass
             sleep(1)
@@ -44,7 +46,7 @@ class YarnPool(RemotePool):
         self.stopping = True
         super(YarnPool, self).terminate()
 
-        self.k.kill(self.app_id)
+        self.knit.kill(self.app_id)
 
     def __reduce__(self):
         pass
