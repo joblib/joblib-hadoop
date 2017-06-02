@@ -45,8 +45,7 @@ class YarnPool(RemotePool):
     def terminate(self):
         self.stopping = True
         super(YarnPool, self).terminate()
-
-        self.knit.kill(self.app_id)
+        self.knit.kill()
 
     def __reduce__(self):
         pass
