@@ -41,9 +41,9 @@ class RemotePoolWorker(object):
         """ Start this worker. """
         self.mgr.add_worker(self._id)
         try:
-            p = Process(target=worker, args=(self._inqueue, self._outqueue))
-            p.start()
-            p.join()
+            proc = Process(target=worker, args=(self._inqueue, self._outqueue))
+            proc.start()
+            proc.join()
 
             self.mgr.remove_worker(self._id, p.exitcode)
 
@@ -60,7 +60,7 @@ def parse_and_start_worker():
     parser.add_argument('--ip', '-i',
                         metavar='IP',
                         type=str,
-                        default="127.0.0.1",
+                        default="usernode",
                         help='The ip-address of the RemotePool.')
     parser.add_argument('--port', '-p',
                         metavar='PORT',

@@ -18,7 +18,7 @@ class YarnPool(RemotePool):
         self.knit = Knit(autodetect=True)
 
         cmd = ('python remoteworker.py --port {} --key {}'
-               .format(self.server.address[1], self.authkey.encode()))
+               .format(self.server.address[1], self.authkey))
         self.app_id = self.knit.start(
             cmd, num_containers=self._processes,
             files=['joblibhadoop/yarn/remoteworker.py', ])
@@ -36,8 +36,8 @@ class YarnPool(RemotePool):
                 status = self.knit.status()
                 yarn_state = status['app']['state']
                 print("YARN application is {}".format(yarn_state))
-                if yarn_state == 'FINISHED':
-                    self.terminate()
+                # if yarn_state == 'FINISHED':
+                #     self.terminate()
             except:
                 pass
             sleep(1)

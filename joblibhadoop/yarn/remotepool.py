@@ -1,7 +1,6 @@
 """Remote workers pool manager module."""
 
-import random
-import string
+import os
 from time import sleep
 from threading import Thread
 from multiprocessing.pool import Pool
@@ -58,8 +57,7 @@ class RemotePool(Pool):
         """
 
         if authkey is None:
-            options = string.ascii_letters + string.digits
-            self.authkey = ''.join([random.choice(options) for _ in range(32)])
+            self.authkey = os.urandom(32)
         else:
             self.authkey = authkey
 
@@ -69,7 +67,7 @@ class RemotePool(Pool):
         QueueManager.register('remove_worker', callable=self._remove_worker)
 
         self.mgr = QueueManager(address=('', port),
-                                authkey=self.authkey.encode())
+                                authkey=self.authkey)
         self.server = self.mgr.get_server()
 
         self.thread = Thread(target=self.server.serve_forever)
@@ -116,7 +114,7 @@ class RemotePool(Pool):
         args.append('--workerid')
         args.append(str(pid))
         args.append('--key')
-        args.append(self.authkey)
+        args.append(self.authkey.decode())
 
         remote_worker.proc = subprocess.Popen(args)
         self._pool.append(remote_worker)
