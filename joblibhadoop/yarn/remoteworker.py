@@ -26,7 +26,7 @@ class RemotePoolWorker(object):
 
     def __init__(self, ip, port, authkey, worker_id=-1):
         """ Construct a new worker """
-        self.mgr = QueueManager(address=(ip, port), authkey=authkey)
+        self.mgr = QueueManager(address=(ip, port), authkey=authkey.encode())
         self.mgr.connect()
 
         self._inqueue = self.mgr.get_inqueue()

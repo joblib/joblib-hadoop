@@ -18,7 +18,7 @@ class YarnPool(RemotePool):
         self.knit = Knit(autodetect=True)
 
         cmd = ('python remoteworker.py --port {} --key {}'
-               .format(self.server.address[1], self.authkey))
+               .format(self.server.address[1], self.authkey.encode()))
         self.app_id = self.knit.start(
             cmd, num_containers=self._processes,
             files=['joblibhadoop/yarn/remoteworker.py', ])

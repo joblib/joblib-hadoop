@@ -24,7 +24,7 @@ class YarnBackend(ThreadingBackend):
     def configure(self, n_jobs, parallel=None, **backend_args):
         """Initialize the backend."""
         n_jobs = self.effective_n_jobs(n_jobs)
-        self._pool = YarnPool(processes=n_jobs, **backend_args)
+        self._pool = YarnPool(processes=n_jobs)
         self.parallel = parallel
         return n_jobs
 
