@@ -136,6 +136,6 @@ class RemotePool(Pool):
 
             print('waiting for objects to be dereferenced')
             sleep(0.1)
-    
+
     def __reduce__(self):
         pass
