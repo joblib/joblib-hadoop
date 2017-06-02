@@ -1,15 +1,17 @@
+"""Remote workers pool manager module."""
+
 import random
 import string
 from time import sleep
 from threading import Thread
 from multiprocessing.pool import Pool
 from multiprocessing.managers import BaseManager
-from multiprocessing.util import debug
 
 import subprocess
 
 
 class QueueManager(BaseManager):
+    """Message queue manager."""
     pass
 
 
@@ -20,14 +22,17 @@ class RemoteWorker(object):
     """
     exitcode = None
     connected = False
+    proc = None
 
     def __init__(self, pid):
         self.pid = pid
 
     def set_connected(self):
+        """Change to connected state."""
         self.connected = True
 
     def set_exitcode(self, exitcode):
+        """Set exit code and switch to disconnect state."""
         self.exitcode = exitcode
         self.connected = False
 
@@ -37,8 +42,8 @@ class RemotePool(Pool):
 
     This object extends a multiprocessing.Pool by exposing its inqueue and
     outqueue using a BaseManager.
-    RemoteWorkers to connect to this pool by connecting to the BaseManager and
-    then using the queues execute tasks
+    RemoteWorkers connect to this pool via the BaseManager and
+    then use the queues to execute tasks
     """
     def __init__(self, processes=None, port=0, authkey=None,
                  workerscript='remoteworker.py'):
@@ -63,12 +68,12 @@ class RemotePool(Pool):
         QueueManager.register('add_worker', callable=self._add_worker)
         QueueManager.register('remove_worker', callable=self._remove_worker)
 
-        m = QueueManager(address=('', port), authkey=self.authkey.encode())
-        self.s = m.get_server()
+        self.mgr = QueueManager(address=('', port), authkey=self.authkey.encode())
+        self.server = self.mgr.get_server()
 
-        self.t = Thread(target=self.s.serve_forever)
-        self.t.daemon = True
-        self.t.start()
+        self.thread = Thread(target=self.server.serve_forever)
+        self.thread.daemon = True
+        self.thread.start()
 
         self.worker_index = 0
         self.workerscript = workerscript
@@ -99,7 +104,6 @@ class RemotePool(Pool):
         for _ in range(self._processes - len(self._pool)):
             self.worker_index += 1
             self._start_remote_worker(self.worker_index)
-            print('added worker')
 
     def _start_remote_worker(self, pid):
         remote_worker = RemoteWorker(pid)
@@ -107,7 +111,7 @@ class RemotePool(Pool):
 
         args = ['python', self.workerscript]
         args.append('--port')
-        args.append(str(self.s.address[1]))
+        args.append(str(self.server.address[1]))
         args.append('--workerid')
         args.append(str(pid))
         args.append('--key')
@@ -126,8 +130,11 @@ class RemotePool(Pool):
 
         # wait until all remote objects are dereferenced
         for _ in range(100):
-            if self.s.number_of_objects(None) == 0:
+            if self.server.number_of_objects(None) == 0:
                 break
 
             print('waiting for objects to be dereferenced')
             sleep(0.1)
+    
+    def __reduce__(self):
+        pass

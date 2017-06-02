@@ -1,3 +1,5 @@
+"""Yarn backend for joblib."""
+
 from joblib._parallel_backends import ThreadingBackend
 from joblib.my_exceptions import WorkerInterrupt
 from .pool import YarnPool
@@ -5,6 +7,9 @@ from .pool import YarnPool
 
 class YarnBackend(ThreadingBackend):
     """The YARN backend class."""
+
+    _pool = None
+    parallel = None
 
     def effective_n_jobs(self, n_jobs):
         """Return the number of effective jobs running in the backend."""
@@ -19,7 +24,7 @@ class YarnBackend(ThreadingBackend):
     def configure(self, n_jobs, parallel=None, **kwargs):
         """Initialize the backend."""
         n_jobs = self.effective_n_jobs(n_jobs)
-        self._pool = YarnPool(processes=n_jobs)
+        self._pool = YarnPool(processes=n_jobs, **kwargs)
         self.parallel = parallel
         return n_jobs
 

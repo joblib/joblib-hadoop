@@ -1,3 +1,5 @@
+"""Remote worker script."""
+
 import sys
 from multiprocessing.pool import worker
 from multiprocessing import Process
@@ -6,7 +8,9 @@ from random import randint
 
 
 class QueueManager(BaseManager):
+    """Message queue manager."""
     pass
+
 QueueManager.register('get_inqueue')
 QueueManager.register('get_outqueue')
 QueueManager.register('add_worker')
@@ -22,33 +26,34 @@ class RemotePoolWorker(object):
 
     def __init__(self, ip, port, authkey, worker_id=-1):
         """ Construct a new worker """
-        self.m = m = QueueManager(address=(ip, port), authkey=authkey)
-        m.connect()
+        self.mgr = QueueManager(address=(ip, port), authkey=authkey)
+        self.mgr.connect()
 
-        self._inqueue = m.get_inqueue()
-        self._outqueue = m.get_outqueue()
+        self._inqueue = self.mgr.get_inqueue()
+        self._outqueue = self.mgr.get_outqueue()
 
         if worker_id == -1:
-            self._id = randint(1, sys.maxint)
+            self._id = randint(1, sys.maxsize)
         else:
             self._id = worker_id
 
     def start(self):
         """ Start this worker. """
-        self.m.add_worker(self._id)
+        self.mgr.add_worker(self._id)
         try:
             p = Process(target=worker, args=(self._inqueue, self._outqueue))
             p.start()
             p.join()
 
-            self.m.remove_worker(self._id, p.exitcode)
+            self.mgr.remove_worker(self._id, p.exitcode)
 
         except:
-            self.m.remove_worker(self._id, 1)
+            self.mgr.remove_worker(self._id, 1)
             raise
 
 
 def parse_and_start_worker():
+    """Parse argument and start the remote worker."""
     import argparse
 
     parser = argparse.ArgumentParser(description='Start a RemotePoolWorker')
@@ -74,8 +79,8 @@ def parse_and_start_worker():
                         help='The id of this RemotePoolWorker.')
     args = parser.parse_args()
 
-    r = RemotePoolWorker(args.ip, args.port, args.key, args.workerid)
-    r.start()
+    remote_worker = RemotePoolWorker(args.ip, args.port, args.key, args.workerid)
+    remote_worker.start()
 
 
 if __name__ == '__main__':

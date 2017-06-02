@@ -18,13 +18,13 @@ class YarnPool(RemotePool):
         self.k = Knit(autodetect=True)
 
         cmd = ('python remoteworker.py --port {} --key {}'
-               .format(self.s.address[1], self.authkey))
+               .format(self.server.address[1], self.authkey))
         self.app_id = self.k.start(cmd,
                                    num_containers=self._processes,
                                    files=['joblibhadoop/yarn/remoteworker.py', ])
-        self.t = Thread(target=self._monitor_appid)
-        self.t.deamon = True
-        self.t.start()
+        self.thread = Thread(target=self._monitor_appid)
+        self.thread.deamon = True
+        self.thread.start()
 
     def _start_remote_worker(self, pid):
         remote_worker = RemoteWorker(pid)
@@ -45,3 +45,6 @@ class YarnPool(RemotePool):
         super(YarnPool, self).terminate()
 
         self.k.kill(self.app_id)
+
+    def __reduce__(self):
+        pass
