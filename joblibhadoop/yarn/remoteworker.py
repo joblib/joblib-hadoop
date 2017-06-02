@@ -79,7 +79,10 @@ def parse_and_start_worker():
                         help='The id of this RemotePoolWorker.')
     args = parser.parse_args()
 
-    remote_worker = RemotePoolWorker(args.ip, args.port, args.key, args.workerid)
+    remote_worker = RemotePoolWorker(args.ip,
+                                     args.port,
+                                     args.key,
+                                     args.workerid)
     remote_worker.start()
 
 

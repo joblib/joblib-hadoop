@@ -68,7 +68,8 @@ class RemotePool(Pool):
         QueueManager.register('add_worker', callable=self._add_worker)
         QueueManager.register('remove_worker', callable=self._remove_worker)
 
-        self.mgr = QueueManager(address=('', port), authkey=self.authkey.encode('ascii'))
+        self.mgr = QueueManager(address=('', port),
+                                authkey=self.authkey.encode())
         self.server = self.mgr.get_server()
 
         self.thread = Thread(target=self.server.serve_forever)
