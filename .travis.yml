@@ -25,6 +25,8 @@ install:
     - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION libhdfs3 -c conda-forge
     - source activate test-environment
     - pip install -r requirements.txt .
+    - docker network ls
+    - docker network inspect docker_joblib_hadoop
 
 script:
     # All examples/tests are run from a docker container
