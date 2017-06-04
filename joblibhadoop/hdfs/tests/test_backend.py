@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import os
 import os.path
 import array
 import numpy as np
@@ -10,6 +11,8 @@ from pytest import mark
 
 from joblib import Memory
 from joblibhadoop.hdfs import register_hdfs_store_backend
+
+__namenode__ = os.environ['NAMENODE']
 
 
 @mark.parametrize("compress", [True, False])
@@ -29,7 +32,7 @@ def test_store_and_retrieve(capsys, tmpdir, compress, arg):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=tmpdir.strpath[1:], host='namenode',
+    mem = Memory(location=tmpdir.strpath[1:], host=__namenode__,
                  backend='hdfs', user='test', verbose=0, compress=compress)
 
     assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
@@ -66,7 +69,7 @@ def test_root_location_replacement(tmpdir):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=location, host='namenode',
+    mem = Memory(location=location, host=__namenode__,
                  backend='hdfs', user='test', verbose=100)
 
     assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
@@ -77,12 +80,12 @@ def test_passing_backend_base_to_memory(tmpdir):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=tmpdir.strpath, host='namenode',
+    mem = Memory(location=tmpdir.strpath, host=__namenode__,
                  backend='hdfs', user='test', verbose=100)
 
     assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
 
-    mem2 = Memory(location=mem.store, host='namenode',
+    mem2 = Memory(location=mem.store, host=__namenode__,
                   backend='hdfs', user='test', verbose=100)
 
     assert mem2.store.cachedir == mem.store.cachedir
@@ -97,7 +100,7 @@ def test_clear_cache(tmpdir):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=tmpdir.strpath, host='namenode',
+    mem = Memory(location=tmpdir.strpath, host=__namenode__,
                  backend='hdfs', user='test', verbose=100, compress=False)
     cached_func = mem.cache(func)
     cached_func("test")
@@ -115,7 +118,7 @@ def test_get_cache_items(tmpdir):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=tmpdir.strpath, host='namenode',
+    mem = Memory(location=tmpdir.strpath, host=__namenode__,
                  backend='hdfs', user='test', verbose=100, compress=False)
     assert not mem.store.get_cache_items()
 

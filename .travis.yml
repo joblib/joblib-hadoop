@@ -34,7 +34,8 @@ script:
     # YARN parallel backend example
     - docker-compose run --rm nodemanager python examples/joblib_yarn_parallel.py
     # Unit testing
-    - docker-compose run --rm nodemanager pytest
+    - docker-compose run --rm -e NAMENODE=namenode nodemanager pytest
+    - pytest
 
 after_success:
     - codecov

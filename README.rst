@@ -52,7 +52,8 @@ libhdfs3. See build_libhdfs3_ if you want to install it using pip.
 Using joblib-hadoop on a Hadoop cluster
 =======================================
 
-TODO: add parallel backend
+1. Use a HDFS storage backend with Joblib memory to cache results (replace
+'namenode' with the name of the HDFS namenode):
 
 ..  code-block:: python
 
@@ -64,7 +65,7 @@ TODO: add parallel backend
       register_hdfs_store_backend()
 
       mem = Memory(location='joblib_cache_hdfs',
-                   backend='hdfs', host='localhost', port=8020, user='test',
+                   backend='hdfs', host='namenode', port=8020, user='test',
                    verbose=100, compress=True)
 
       multiply = mem.cache(np.multiply)
@@ -77,11 +78,35 @@ TODO: add parallel backend
       result = multiply(array1, array2)
       print(result)
 
+2. Use a YARN backend with Joblib parallel to parallelize computations:
+
+..  code-block:: python
+
+  from math import sqrt
+  from joblib import (Parallel, delayed,
+                      register_parallel_backend, parallel_backend)
+  from joblibhadoop.yarn import YarnBackend
+
+  if __name__ == '__main__':
+      register_parallel_backend('yarn', YarnBackend)
+
+      # Run in parallel using Yarn backend
+      with parallel_backend('yarn', n_jobs=5):
+          print(Parallel(verbose=100)(
+              delayed(sqrt)(i**2) for i in range(100)))
+
+      # Should be executed in parallel locally
+      print(Parallel(verbose=100, n_jobs=5)(
+          delayed(sqrt)(i**2) for i in range(100)))
+
+The YARN parallel backend example only works on a host where Hadoop is installed and 
+correctly configured.
+
 
 All examples are available in the `examples <examples>`_ directory.
 
-Developping in joblibhadoop
-===========================
+Developping with joblibhadoop
+=============================
 
 Prerequisites
 -------------
@@ -105,34 +130,46 @@ You have to be able to run the hello-world container:
     $ pip install docker-compose
 
 
-3. Build the hadoop cluster using docker-compose:
+3. Start your hadoop cluster using docker-compose:
 
 ..  code-block:: bash
 
-    $ cd joblistore/docker
-    $ docker-compose run namenode hdfs namenode -format
+    $ cd joblib-hadoop/docker
+    $ docker-compose up
 
 Running the test suite
 ----------------------
 
-1. Start your hadoop cluster:
+The test suite can be launched from another container of the Hadoop
+nodemanager. This is achieved very easily using docker-compose.
+
+1. Ensure your hadoop cluster is already started:
 
 ..  code-block:: bash
 
    $ cd joblib-hadoop/docker
-   $ docker-compose up
+   $ docker-compose up -d
+   $ docker-compose ps
 
-2. In another terminal, activate your joblibhadoop-env conda environment:
+Your containers should be in the state *Up*.
 
-..  code-block:: bash
-
-    $ . activate joblibhadoop-env
-
-3. Run pytest
+2. You can start pytest from a nodemanager container instance:
 
 ..  code-block:: bash
 
-    $ pytest
+   $ docker-compose run --rm -e NAMENODE=namenode nodemanager pytest
+
+or locally:
+
+..  code-block:: bash
+
+   $ pytest
+
+3. After changes in the code, the nodemanager image needs to be rebuild:
+
+..  code-block:: bash
+
+   $ docker-compose build --no-cache nodemanager
 
 
 .. _build_libhdfs3:
