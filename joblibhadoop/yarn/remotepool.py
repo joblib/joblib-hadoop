@@ -2,6 +2,7 @@
 
 import string
 import random
+import socket
 from time import sleep
 from threading import Thread
 from multiprocessing.pool import Pool
@@ -111,6 +112,8 @@ class RemotePool(Pool):
         print('starting remote worker %d', pid)
 
         args = ['python', self.workerscript]
+        args.append('--host')
+        args.append(socket.gethostname())
         args.append('--port')
         args.append(str(self.server.address[1]))
         args.append('--workerid')
