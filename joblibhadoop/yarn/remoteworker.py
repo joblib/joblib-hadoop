@@ -45,7 +45,7 @@ class RemotePoolWorker(object):
             proc.start()
             proc.join()
 
-            self.mgr.remove_worker(self._id, p.exitcode)
+            self.mgr.remove_worker(self._id, proc.exitcode)
 
         except:
             self.mgr.remove_worker(self._id, 1)
