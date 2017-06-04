@@ -14,7 +14,6 @@ before_install:
     - sudo apt-get update
     - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
     - cd docker
-    - docker-compose run namenode hdfs namenode -format
     - docker-compose up -d
     - docker ps
     - cd ..
@@ -30,7 +29,11 @@ install:
     - pip install -r requirements.txt .
 
 script:
+    # HDFS store backend example
     - python examples/joblib_hdfs_multiply.py
+    # YARN parallel backend example
+    - docker-compose run --rm nodemanager python examples/joblib_yarn_parallel.py
+    # Unit testing
     - pytest
 
 after_success:
