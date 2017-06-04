@@ -5,6 +5,7 @@ import random
 import socket
 from time import sleep
 from threading import Thread
+from multiprocessing.util import debug
 from multiprocessing.pool import Pool
 from multiprocessing.managers import BaseManager
 
@@ -109,7 +110,7 @@ class RemotePool(Pool):
 
     def _start_remote_worker(self, pid):
         remote_worker = RemoteWorker(pid)
-        print('starting remote worker %d', pid)
+        debug('starting remote worker %d', pid)
 
         args = ['python', self.workerscript]
         args.append('--host')
@@ -137,7 +138,7 @@ class RemotePool(Pool):
             if self.server.number_of_objects(None) == 0:
                 break
 
-            print('waiting for objects to be dereferenced')
+            debug('waiting for objects to be dereferenced')
             sleep(0.1)
 
     def __reduce__(self):
