@@ -9,3 +9,9 @@ To start the HDFS cluster, run:
 ```
   docker-compose up
 ```
+
+### Build the nodemanager using docker:
+
+```
+  docker build nodemanager/ --tag joblib/joblib-hadoop-nodemanager:latest
+```

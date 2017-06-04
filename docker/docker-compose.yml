@@ -42,7 +42,6 @@ services:
   nodemanager:
     image: joblib/joblib-hadoop-nodemanager:latest
     container_name: nodemanager
-    build: nodemanager/.
     depends_on:
       - namenode
       - datanode1
