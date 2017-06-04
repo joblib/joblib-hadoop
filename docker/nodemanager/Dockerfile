@@ -25,7 +25,7 @@ RUN wget -O miniconda.sh \
 ENV PATH="/work/bin:/work/miniconda/bin:$PATH"
 
 # Create environment for python 3.5
-COPY ../environment.yml /work/environment.yml
+COPY ../conda-environment.yml /work/conda-environment.yml
 RUN conda env create -n py35 python=3.5 --file environment.yml
 
 # Required for libhdfs3
