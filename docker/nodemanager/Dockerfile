@@ -9,6 +9,7 @@ RUN apt-get update -yqq  && apt-get install -yqq \
   git \
   libglib2.0-0 \
   vim \
+  make \
   && rm -rf /var/lib/apt/lists/*
 
 # Configure environment
