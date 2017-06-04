@@ -32,7 +32,8 @@ script:
     # HDFS store backend example
     - python examples/joblib_hdfs_multiply.py
     # YARN parallel backend example
-    - docker-compose run --rm nodemanager python examples/joblib_yarn_parallel.py
+    - cd docker && docker-compose run --rm nodemanager python examples/joblib_yarn_parallel.py
+    - cd ..
     # Unit testing
     - pytest
 
