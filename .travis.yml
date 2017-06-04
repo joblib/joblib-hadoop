@@ -29,18 +29,16 @@ install:
     - docker network inspect docker_joblib_hadoop
 
 script:
+    # Run local unit tests first
+    - pytest
     # All examples/tests are run from a docker container
     - cd docker
     # HDFS store backend example
     - docker-compose run --rm --name testnode nodemanager python examples/joblib_hdfs_multiply.py
     # YARN parallel backend example
-    - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
+    # - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
     # Unit testing from root of project
-    - docker-compose run --rm --name testnode -e NAMENODE=namenode nodemanager pytest
-    - cd .. && pytest
-
-after_success:
-    - codecov
+    - docker-compose run --rm --name testnode -e NAMENODE=namenode nodemanager bash -c "pytest && codecov"
 
 after_script:
     # Cleanup
