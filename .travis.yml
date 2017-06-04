@@ -33,9 +33,9 @@ script:
     - docker-compose run --rm --name testnode nodemanager python examples/joblib_hdfs_multiply.py
     # YARN parallel backend example
     - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
-    # Unit testing
+    # Unit testing from root of project
     - docker-compose run --rm --name testnode -e NAMENODE=namenode nodemanager pytest
-    - pytest
+    - cd .. && pytest
 
 after_success:
     - codecov
