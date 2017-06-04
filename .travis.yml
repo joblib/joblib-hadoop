@@ -30,11 +30,11 @@ script:
     # All examples/tests are run from a docker container
     - cd docker
     # HDFS store backend example
-    - docker-compose run --rm nodemanager python examples/joblib_hdfs_multiply.py
+    - docker-compose run --rm --name testnode nodemanager python examples/joblib_hdfs_multiply.py
     # YARN parallel backend example
-    - docker-compose run --rm nodemanager python examples/joblib_yarn_parallel.py
+    - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
     # Unit testing
-    - docker-compose run --rm -e NAMENODE=namenode nodemanager pytest
+    - docker-compose run --rm --name testnode -e NAMENODE=namenode nodemanager pytest
     - pytest
 
 after_success:
