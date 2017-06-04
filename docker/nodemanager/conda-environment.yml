@@ -1,11 +1,11 @@
 channels:
   - dask
 dependencies:
-  - ipython
+  - pip
   - setuptools
   - ipython
   - distributed
+  - scikit-learn
   - libhdfs3
   - hdfs3
   - knit
-  - pip

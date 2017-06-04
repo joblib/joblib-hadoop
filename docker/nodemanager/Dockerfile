@@ -33,6 +33,12 @@ RUN conda install -n py35 -c clinicalgraphics libgcrypt11
 
 ENV PATH /work/miniconda/envs/py35/bin:$PATH
 
+# Install joblib-hadoop
+RUN git clone https://github.com/joblib/joblib-hadoop.git
+
+WORKDIR /work/joblib-hadoop
+RUN pip install -r requirements.txt .
+
 EXPOSE 8042
 EXPOSE 8080
 
