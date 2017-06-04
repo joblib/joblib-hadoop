@@ -24,8 +24,11 @@ RUN wget -O miniconda.sh \
 
 ENV PATH="/work/bin:/work/miniconda/bin:$PATH"
 
-COPY python3.5.yml /work/python3.5.yml
-RUN conda env create -n py35 -f python3.5.yml
+# Create environment for python 3.5
+COPY ../environment.yml /work/environment.yml
+RUN conda env create -n py35 python=3.5 --file environment.yml
+
+# Required for libhdfs3
 RUN conda install -n py35 -c clinicalgraphics libgcrypt11
 
 ENV PATH /work/miniconda/envs/py35/bin:$PATH
