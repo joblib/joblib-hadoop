@@ -1,4 +1,9 @@
 .PHONY: all
 
-all:
-	pytest && codecov
+all: coverage
+
+test:
+	pytest
+	
+coverage: test
+	codecov
