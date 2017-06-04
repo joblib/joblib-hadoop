@@ -40,5 +40,10 @@ script:
 after_success:
     - codecov
 
+after_script:
+    # Cleanup
+    - docker-compose kill
+    - docker-compose rm -f
+
 notifications:
       email: false
