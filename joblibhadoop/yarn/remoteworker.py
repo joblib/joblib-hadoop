@@ -57,11 +57,11 @@ def parse_and_start_worker():
     import argparse
 
     parser = argparse.ArgumentParser(description='Start a RemotePoolWorker')
-    parser.add_argument('--ip', '-i',
-                        metavar='IP',
+    parser.add_argument('--host',
+                        metavar='HOSTNAME',
                         type=str,
-                        default="usernode",
-                        help='The ip-address of the RemotePool.')
+                        default="localhost",
+                        help='The hostname/IP of the RemotePool.')
     parser.add_argument('--port', '-p',
                         metavar='PORT',
                         type=int,

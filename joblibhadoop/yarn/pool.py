@@ -1,5 +1,6 @@
 """Yarn pool module."""
 
+import socket
 from threading import Thread
 from time import sleep
 from knit import Knit
@@ -17,8 +18,10 @@ class YarnPool(RemotePool):
         self.stopping = False
         self.knit = Knit(autodetect=True)
 
-        cmd = ('python remoteworker.py --port {} --key {}'
-               .format(self.server.address[1], self.authkey))
+        cmd = ('python remoteworker.py --host {} --port {} --key {}'
+               .format(socket.gethostname(),
+                       self.server.address[1],
+                       self.authkey))
         self.app_id = self.knit.start(
             cmd, num_containers=self._processes,
             files=['joblibhadoop/yarn/remoteworker.py', ])
