@@ -39,8 +39,6 @@ class YarnPool(RemotePool):
                 status = self.knit.status()
                 yarn_state = status['app']['state']
                 print("YARN application is {}".format(yarn_state))
-                # if yarn_state == 'FINISHED':
-                #     self.terminate()
             except:
                 pass
             sleep(1)
@@ -49,6 +47,3 @@ class YarnPool(RemotePool):
         self.stopping = True
         super(YarnPool, self).terminate()
         self.knit.kill()
-
-    def __reduce__(self):
-        pass

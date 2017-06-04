@@ -5,6 +5,9 @@ from joblib.my_exceptions import WorkerInterrupt
 from .pool import YarnPool
 
 
+__interrupts__ = [KeyboardInterrupt, WorkerInterrupt]
+
+
 class YarnBackend(ThreadingBackend):
     """The YARN backend class."""
 
@@ -32,4 +35,4 @@ class YarnBackend(ThreadingBackend):
         """Return the list of interrupt supported by the backend."""
         # We are using multiprocessing, we also want to capture
         # KeyboardInterrupts
-        return [KeyboardInterrupt, WorkerInterrupt]
+        return __interrupts__
