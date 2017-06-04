@@ -26,7 +26,6 @@ def test_supported_interrupt():
     assert backend.get_exceptions() == __interrupts__
 
 
-@skip_localhost
 def test_parallel_invalid_njobs_raises_value_error():
     """Check that calling parallel with wrong n_jobs raise an exception."""
     register_parallel_backend('yarn', YarnBackend)
