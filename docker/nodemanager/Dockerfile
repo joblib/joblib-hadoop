@@ -1,5 +1,5 @@
 FROM bde2020/hadoop-base:1.1.0-hadoop2.7.1-java8
-MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
+MAINTAINER Alexandre Abadie <alexandre.abadie@gmail.com>
 
 HEALTHCHECK CMD curl -f http://localhost:8042/ || exit 1
 
@@ -25,16 +25,13 @@ RUN wget -O miniconda.sh \
 ENV PATH="/work/bin:/work/miniconda/bin:$PATH"
 
 # Create environment for python 3.5
-COPY ../conda-environment.yml /work/conda-environment.yml
-RUN conda env create -n py35 python=3.5 --file environment.yml
+COPY conda-environment.yml /work/conda-environment.yml
+RUN conda env create -n py35 python=3.5 --file conda-environment.yml
 
 # Required for libhdfs3
 RUN conda install -n py35 -c clinicalgraphics libgcrypt11
 
 ENV PATH /work/miniconda/envs/py35/bin:$PATH
-
-RUN git clone https://github.com/joblib/joblib-hadoop.git
-RUN cd joblib-hadoop && pip install -r requirements.txt .
 
 EXPOSE 8042
 EXPOSE 8080

@@ -1,6 +1,7 @@
 channels:
   - dask
 dependencies:
+  - ipython
   - setuptools
   - ipython
   - distributed

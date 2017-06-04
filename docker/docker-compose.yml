@@ -80,6 +80,13 @@ services:
     env_file:
       - ./hadoop.env
 
+  joblib-hadoop-testing:
+    image: joblib/joblib-hadoop-testing:latest
+    container_name: joblib-hadoop-testing
+    build: joblib-hadoop-testing/.
+    env_file:
+      - ./hadoop.env
+
 volumes:
   hadoop_namenode:
   hadoop_datanode1:

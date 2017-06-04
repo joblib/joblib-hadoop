@@ -5,7 +5,7 @@ The Hadoop cluster runs the docker containers from
 
 ### Description
 
-To deploy the HDFS cluster, run:
+To start the HDFS cluster, run:
 ```
   docker-compose up
 ```
