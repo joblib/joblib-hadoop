@@ -1,9 +1,7 @@
 .PHONY: all
 
-all: coverage
-
-test:
+all: test
 	pytest
-	
-coverage: test
-	codecov
+
+docker-test: test
+	mv coverage.txt /shared
