@@ -54,9 +54,9 @@ script:
     # HDFS store backend example
     - docker-compose run --rm --name testnode nodemanager python examples/joblib_hdfs_multiply.py
     # YARN parallel backend example
-    - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
+    # - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
     # Unit testing from root of project
-    - docker-compose run --rm --name testnode -e NAMENODE=namenode nodemanager make docker-test
+    # - docker-compose run --rm --name testnode -e NAMENODE=namenode nodemanager make docker-test
     - cd ..
 
 after_success:
