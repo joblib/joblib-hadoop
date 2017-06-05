@@ -45,7 +45,6 @@ services:
     build: nodemanager/.
     volumes:
       - ..:/shared
-      - /home:/home
     depends_on:
       - namenode
       - datanode1
@@ -77,5 +76,4 @@ volumes:
   hadoop_namenode:
   hadoop_datanode1:
   hadoop_datanode2:
-  hadoop_datanode3:
   hadoop_historyserver:
