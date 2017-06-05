@@ -43,6 +43,9 @@ RUN pip install -r requirements.txt .
 EXPOSE 8042
 EXPOSE 8080
 
+COPY wait-for /work/wait-for
+RUN chmod a+x /work/wait-for
+
 # Start yarn
 ADD run.sh /run.sh
 RUN chmod a+x /run.sh
