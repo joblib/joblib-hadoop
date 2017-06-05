@@ -12,7 +12,7 @@ before_install:
     - sudo apt-get update
     - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
     - cd docker
-    - docker system prune -a
+    - docker system prune -af
     - docker-compose up -d
     - cd ..
 
