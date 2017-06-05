@@ -11,8 +11,6 @@ services:
       - hadoop_namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=joblib-test
-    networks:
-      - joblib_hadoop
     env_file:
       - ./hadoop.env
 
@@ -26,8 +24,6 @@ services:
       - namenode
       - datanode1
       - datanode2
-    networks:
-      - joblib_hadoop
     env_file:
       - ./hadoop.env
 
@@ -40,8 +36,6 @@ services:
       - datanode2
     volumes:
       - hadoop_historyserver:/hadoop/yarn/timeline
-    networks:
-      - joblib_hadoop
     env_file:
       - ./hadoop.env
 
@@ -49,12 +43,12 @@ services:
     image: joblib/joblib-hadoop-nodemanager:latest
     container_name: nodemanager
     build: nodemanager/.
+    volumes:
+      - ..:/shared
     depends_on:
       - namenode
       - datanode1
       - datanode2
-    networks:
-      - joblib_hadoop
     env_file:
       - ./hadoop.env
 
@@ -65,8 +59,6 @@ services:
       - namenode
     volumes:
       - hadoop_datanode1:/hadoop/dfs/data
-    networks:
-      - joblib_hadoop
     env_file:
       - ./hadoop.env
 
@@ -77,8 +69,6 @@ services:
       - namenode
     volumes:
       - hadoop_datanode2:/hadoop/dfs/data
-    networks:
-      - joblib_hadoop
     env_file:
       - ./hadoop.env
 
@@ -89,14 +79,8 @@ services:
       - namenode
     volumes:
       - hadoop_datanode3:/hadoop/dfs/data
-    networks:
-      - joblib_hadoop
     env_file:
       - ./hadoop.env
-
-networks:
-  joblib_hadoop:
-    driver: bridge
 
 volumes:
   hadoop_namenode:

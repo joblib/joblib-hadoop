@@ -12,10 +12,8 @@ before_install:
     - sudo apt-get update
     - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
     - cd docker
+    - docker system prune -a
     - docker-compose up -d
-    - docker ps
-    - docker-compose --version
-    - docker --version
     - cd ..
 
 install:
@@ -27,6 +25,9 @@ install:
     - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION libhdfs3 -c conda-forge
     - source activate test-environment
     - pip install -r requirements.txt .
+    # Some checks on Hadoop cluster
+    - docker-compose --version
+    - docker --version
     - docker ps
     - docker network ls
     - docker network inspect docker_joblib_hadoop
@@ -42,17 +43,17 @@ script:
     # YARN parallel backend example
     - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
     # Unit testing from root of project
-    - docker-compose run --rm -v ".:/shared" --name testnode -e NAMENODE=namenode nodemanager make docker-test
+    - docker-compose run --rm --name testnode -e NAMENODE=namenode nodemanager make docker-test
     - cd ..
 
 after_success:
     # Send coverage results to codecov
     - codecov
 
-after_script:
+after_failure:
+    - cd && cd docker
     # Cleanup
-    - cd docker
-    - docker-compose kill
+    - docker-compose stop
     - docker-compose rm -f
 
 notifications:
