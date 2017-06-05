@@ -30,7 +30,7 @@ install:
     - docker --version
     - docker ps
     - docker network ls
-    - docker network inspect docker_joblib_hadoop
+    - docker network inspect docker_default
     - cd docker && docker-compose ps && cd ..
 
 script:
