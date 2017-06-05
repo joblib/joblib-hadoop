@@ -30,7 +30,6 @@ install:
     - docker network inspect docker_joblib_hadoop
     - cd docker && docker-compose ps && cd ..
     # Required for sharing coverage with containers
-    - mkdir shared
 
 script:
     # Run local unit tests first
@@ -42,12 +41,12 @@ script:
     # YARN parallel backend example
     - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
     # Unit testing from root of project
-    - docker-compose run --rm -v "$PWD/shared:/shared" --name testnode -e NAMENODE=namenode nodemanager make docker-test
+    - docker-compose run --rm -v ".:/shared" --name testnode -e NAMENODE=namenode nodemanager make docker-test
     - cd ..
 
 after_success:
     # Send coverage results to codecov
-    - bash <(curl -s https://codecov.io/bash)
+    - codecov
 
 after_script:
     # Cleanup
