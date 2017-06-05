@@ -1,5 +1,6 @@
 """joblib-hadoop package installation module."""
 
+from os.path import join as pjoin
 from setuptools import setup, find_packages
 
 if __name__ == '__main__':
@@ -14,9 +15,10 @@ if __name__ == '__main__':
           license='BSD',
           platforms='any',
           packages=find_packages(),
+          scripts=[pjoin('bin', 'joblib-yarn-worker')],
           install_requires=[
-            'joblib>=0.10',
-            'knit>=0.2'
+              'joblib>=0.10',
+              'knit>=0.2'
           ],
           zip_safe=False,
-          )
+         )

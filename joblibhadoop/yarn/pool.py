@@ -18,13 +18,12 @@ class YarnPool(RemotePool):
         self.stopping = False
         self.knit = Knit(autodetect=True)
 
-        cmd = ('python remoteworker.py --host {} --port {} --key {}'
+        cmd = ('joblib-yarn-worker --host {} --port {} --key {}'
                .format(socket.gethostname(),
                        self.server.address[1],
                        self.authkey))
-        self.app_id = self.knit.start(
-            cmd, num_containers=self._processes,
-            files=['joblibhadoop/yarn/remoteworker.py', ])
+        self.app_id = self.knit.start(cmd,
+                                      num_containers=self._processes)
         self.thread = Thread(target=self._monitor_appid)
         self.thread.deamon = True
         self.thread.start()

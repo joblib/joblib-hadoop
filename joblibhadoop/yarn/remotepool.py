@@ -112,15 +112,11 @@ class RemotePool(Pool):
         remote_worker = RemoteWorker(pid)
         debug('starting remote worker %d', pid)
 
-        args = ['python', self.workerscript]
-        args.append('--host')
-        args.append(socket.gethostname())
-        args.append('--port')
-        args.append(str(self.server.address[1]))
-        args.append('--workerid')
-        args.append(str(pid))
-        args.append('--key')
-        args.append(self.authkey.decode())
+        args = [self.workerscript,
+                '--host', socket.gethostname(),
+                '--port', str(self.server.address[1]),
+                '--workerid', str(pid),
+                '--key', self.authkey.decode()]
 
         remote_worker.proc = subprocess.Popen(args)
         self._pool.append(remote_worker)
