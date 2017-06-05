@@ -40,13 +40,10 @@ RUN git clone https://github.com/joblib/joblib-hadoop.git
 WORKDIR /work/joblib-hadoop
 RUN pip install -r requirements.txt .
 
-EXPOSE 8042
-
-COPY wait-for /work/wait-for
-RUN chmod a+x /work/wait-for
-
 # Start yarn
 ADD run.sh /run.sh
 RUN chmod a+x /run.sh
+
+EXPOSE 8042
 
 CMD ["/run.sh"]

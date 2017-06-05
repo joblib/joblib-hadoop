@@ -31,7 +31,6 @@ install:
     - docker network ls
     - docker network inspect docker_joblib_hadoop
     - cd docker && docker-compose ps && cd ..
-    # Required for sharing coverage with containers
 
 script:
     # Run local unit tests first
