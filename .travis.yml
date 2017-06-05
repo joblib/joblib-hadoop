@@ -8,11 +8,24 @@ python:
 services:
     - docker
 
+env:
+  DOCKER_COMPOSE_VERSION: 1.11.2
+
 before_install:
+    # Install latest available version of docker
     - sudo apt-get update
     - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
+
+    # Install a more recent version of docker-compose
+    - sudo rm /usr/local/bin/docker-compose
+    - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+    - chmod +x docker-compose
+    - sudo mv docker-compose /usr/local/bin
+
+    # Clean up docker cache and start the Hadoop cluster
     - cd docker
     - docker system prune -af
+    - docker-compose build nodemanager
     - docker-compose up -d
     - cd ..
 
