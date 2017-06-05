@@ -49,8 +49,6 @@ services:
     image: joblib/joblib-hadoop-nodemanager:latest
     container_name: nodemanager
     build: nodemanager/.
-    volumes:
-      - /home:/home
     depends_on:
       - namenode
       - datanode1
