@@ -45,6 +45,7 @@ services:
     build: nodemanager/.
     volumes:
       - ..:/shared
+      - /home:/home
     depends_on:
       - namenode
       - datanode1
@@ -69,16 +70,6 @@ services:
       - namenode
     volumes:
       - hadoop_datanode2:/hadoop/dfs/data
-    env_file:
-      - ./hadoop.env
-
-  datanode3:
-    image: bde2020/hadoop-datanode:1.1.0-hadoop2.7.1-java8
-    container_name: datanode3
-    depends_on:
-      - namenode
-    volumes:
-      - hadoop_datanode3:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
 
