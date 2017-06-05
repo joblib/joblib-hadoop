@@ -4,6 +4,7 @@ import socket
 from threading import Thread
 from time import sleep
 from knit import Knit
+from multiprocessing.util import debug
 from .remotepool import RemotePool, RemoteWorker
 
 
@@ -34,12 +35,9 @@ class YarnPool(RemotePool):
 
     def _monitor_appid(self):
         while not self.stopping:
-            try:
-                status = self.knit.status()
-                yarn_state = status['app']['state']
-                print("YARN application is {}".format(yarn_state))
-            except:
-                pass
+            status = self.knit.status()
+            yarn_state = status['app']['state']
+            debug("YARN application is {}".format(yarn_state))
             sleep(1)
 
     def terminate(self):
