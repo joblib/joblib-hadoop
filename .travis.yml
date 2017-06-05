@@ -28,8 +28,6 @@ install:
     - docker ps
     - docker network ls
     - docker network inspect docker_joblib_hadoop
-    - cd docker && docker-compose run --rm --name installnode nodemanager docker/nodemanager/wait-for nodemanager:8042
-    - cd ..
 
 script:
     # Run local unit tests first
