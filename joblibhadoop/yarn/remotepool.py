@@ -1,5 +1,6 @@
 """Remote workers pool manager module."""
 
+import os.path
 import string
 import random
 import socket
@@ -112,7 +113,7 @@ class RemotePool(Pool):
         remote_worker = RemoteWorker(pid)
         debug('starting remote worker %d', pid)
 
-        args = [self.workerscript,
+        args = [os.path.join('$PY35_PATH', self.workerscript),
                 '--host', socket.gethostname(),
                 '--port', str(self.server.address[1]),
                 '--workerid', str(pid),

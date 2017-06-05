@@ -18,7 +18,7 @@ class YarnPool(RemotePool):
         self.stopping = False
         self.knit = Knit(autodetect=True)
 
-        cmd = ('joblib-yarn-worker --host {} --port {} --key {}'
+        cmd = ('$PY35_PATH/joblib-yarn-worker --host {} --port {} --key {}'
                .format(socket.gethostname(),
                        self.server.address[1],
                        self.authkey))
