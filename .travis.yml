@@ -25,20 +25,23 @@ before_install:
     # Clean up docker cache and start the Hadoop cluster
     - cd docker
     - docker system prune -af
-    - docker-compose build nodemanager
     - docker-compose up -d
     - cd ..
 
 install:
+    # Install miniconda environment
     - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
     - bash miniconda.sh -b -p $HOME/miniconda
     - export PATH="$HOME/miniconda/bin:$PATH"
     - conda config --set always_yes yes --set changeps1 no
-    - conda update -q conda
-    - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION libhdfs3 -c conda-forge
+    - conda update -y -q conda
+    - conda create -y -q -n test-environment python=$TRAVIS_PYTHON_VERSION libhdfs3 -c conda-forge
     - source activate test-environment
+
+    # Install joblib-hadoop
     - pip install -r requirements.txt .
-    # Some checks on Hadoop cluster
+
+    # Some checks on docker and Hadoop cluster health
     - docker-compose --version
     - docker --version
     - docker ps
@@ -49,23 +52,20 @@ install:
 script:
     # Run local unit tests first
     - make test
-    # All examples/tests are run from a docker container
-    # HDFS store backend example
-    - make docker-hdfs-example
-    # YARN parallel backend example
-    - make docker-yarn-example
-    # Unit testing from root of project
-    - make docker-test
+
+    # Run HDFS store backend, YARN parallel backend examples and pytest
+    # are run from the joblib-hadoop-client docker container
+    - make docker-all
 
 after_success:
     # Send coverage results to codecov
     - codecov
 
 after_failure:
-    - make docker-compose-stop
+    - make docker-stop
 
 after_script:
-    - make docker-compose-stop
+    - make docker-stop
 
 notifications:
       email: false

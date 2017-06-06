@@ -16,8 +16,8 @@ JOBLIB_YARN_WORKER = 'joblib-yarn-worker'
 JOBLIB_YARN_CONDA_ENV = 'conda_env'
 
 TEMP_DIR = os.environ.get('JOBLIB_TEMP_FOLDER', tempfile.gettempdir())
-CONDA_ENV_CREATE_COMMAND = 'conda env create -p {} --file={}'
-CONDA_ENV_INSTALL_COMMAND = 'conda install -p /tmp/{} {}'
+CONDA_ENV_CREATE_COMMAND = 'conda env create -q -p {} --file={}'
+CONDA_ENV_INSTALL_COMMAND = 'conda install -y -q -p /tmp/{} {}'
 
 
 def create_conda_env(*extra_packages):
