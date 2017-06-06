@@ -1,4 +1,4 @@
-.PHONY: all
+.PHONY: all test docker-test docker-hdfs-clear docker-compose-stop
 
 all: test
 
@@ -14,3 +14,7 @@ docker-test: docker-hdfs-clear test
 
 docker-hdfs-clear:
 	hdfs dfs -rm -f -r /user/test
+
+docker-compose-stop:
+	cd docker && docker-compose stop
+	cd docker && docker-compose rm -f

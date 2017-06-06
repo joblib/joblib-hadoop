@@ -14,7 +14,7 @@ env:
 before_install:
     # Install latest available version of docker
     - sudo apt-get update
-    - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
+    - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine make
 
     # Install a more recent version of docker-compose
     - sudo rm /usr/local/bin/docker-compose
@@ -56,7 +56,7 @@ script:
     # YARN parallel backend example
     # - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
     # Unit testing from root of project
-    # - docker-compose run --rm --name testnode -e NAMENODE=namenode nodemanager make docker-test
+    # - docker-compose run --rm --name testnode -e JOBLIB_HDFS_NAMENODE=namenode nodemanager make docker-test
     - cd ..
 
 after_success:
@@ -64,10 +64,10 @@ after_success:
     - codecov
 
 after_failure:
-    - cd && cd docker
-    # Cleanup
-    - docker-compose stop
-    - docker-compose rm -f
+    - make docker-compose-stop
+
+after_script:
+    - make docker-compose-stop
 
 notifications:
       email: false
