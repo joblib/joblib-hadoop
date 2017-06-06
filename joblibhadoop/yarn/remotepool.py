@@ -1,6 +1,5 @@
 """Remote workers pool manager module."""
 
-import os.path
 import string
 import random
 import socket
@@ -49,7 +48,7 @@ class RemotePool(Pool):
     then use the queues to execute tasks
     """
     def __init__(self, processes=None, port=0, authkey=None,
-                 workerscript='remoteworker.py'):
+                 workerscript=None):
         """ Construct a new RemotePool.
 
         @param processes: Number of Python processes to be spawned
@@ -138,5 +137,3 @@ class RemotePool(Pool):
             debug('waiting for objects to be dereferenced')
             sleep(0.1)
 
-    def __reduce__(self):
-        pass

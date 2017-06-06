@@ -7,6 +7,8 @@ from multiprocessing.util import debug
 from knit import Knit
 from .remotepool import RemotePool, RemoteWorker
 
+JOBLIB_YARN_WORKER = 'joblib-yarn-worker'
+
 
 class YarnPool(RemotePool):
     """The Yarn Pool mananger."""
@@ -15,13 +17,13 @@ class YarnPool(RemotePool):
         super(YarnPool, self).__init__(processes=processes,
                                        port=port,
                                        authkey=authkey,
-                                       workerscript=None)
+                                       workerscript=JOBLIB_YARN_WORKER)
         self.stopping = False
         self.knit = Knit(autodetect=True)
 
-        cmd = ('joblib-yarn-worker '
-               '--host {} --port {} --key {}'
-               .format(socket.gethostname(),
+        cmd = ('{} --host {} --port {} --key {}'
+               .format(JOBLIB_YARN_WORKER,
+                       socket.gethostname(),
                        self.server.address[1],
                        self.authkey))
         self.app_id = self.knit.start(cmd,
