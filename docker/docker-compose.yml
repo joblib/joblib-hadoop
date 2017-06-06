@@ -17,6 +17,7 @@ services:
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:1.1.0-hadoop2.7.1-java8
     container_name: resourcemanager
+    restart: on-failure
     ports:
         - "8032:8032"
         - "8088:8088"
@@ -40,11 +41,9 @@ services:
       - ./hadoop.env
 
   nodemanager:
-    image: joblib/joblib-hadoop-nodemanager:latest
+    image: bde2020/hadoop-nodemanager:1.1.0-hadoop2.7.1-java8
     container_name: nodemanager
-    build: nodemanager/.
-    volumes:
-      - ..:/shared # required for code coverage
+    restart: on-failure
     depends_on:
       - namenode
       - datanode1
@@ -69,6 +68,15 @@ services:
       - namenode
     volumes:
       - hadoop_datanode2:/hadoop/dfs/data
+    env_file:
+      - ./hadoop.env
+
+  joblib-hadoop-client:
+    image: joblib/joblib-hadoop-client:latest
+    container_name: joblib-hadoop-client
+    build: joblib-hadoop-client/.
+    volumes:
+      - ..:/shared # required for code coverage
     env_file:
       - ./hadoop.env
 

@@ -1,8 +1,6 @@
 FROM bde2020/hadoop-base:1.1.0-hadoop2.7.1-java8
 MAINTAINER Alexandre Abadie <alexandre.abadie@gmail.com>
 
-HEALTHCHECK CMD curl -f http://localhost:8042/ || exit 1
-
 RUN apt-get update -yqq  && apt-get install -yqq \
   wget \
   bzip2 \
@@ -32,7 +30,7 @@ RUN conda env create -n py35 python=3.5 --file conda-environment.yml
 # Required for libhdfs3
 RUN conda install -n py35 -c clinicalgraphics libgcrypt11
 
-# use conda py35 environment by default
+# Use conda py35 environment by default
 ENV PATH /work/miniconda/envs/py35/bin:$PATH
 
 # Install joblib-hadoop
@@ -41,10 +39,4 @@ RUN git clone https://github.com/joblib/joblib-hadoop.git
 WORKDIR /work/joblib-hadoop
 RUN pip install -r requirements.txt .
 
-# Start yarn
-ADD run.sh /run.sh
-RUN chmod a+x /run.sh
-
-EXPOSE 8042
-
-CMD ["/run.sh"]
+CMD ["bash"]

@@ -7,5 +7,4 @@ dependencies:
   - distributed
   - scikit-learn
   - libhdfs3
-  - hdfs3
   - knit
