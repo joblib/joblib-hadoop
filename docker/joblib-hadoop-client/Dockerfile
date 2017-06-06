@@ -25,7 +25,7 @@ ENV PATH="/work/bin:/work/miniconda/bin:$PATH"
 
 # Create environment for python 3.5
 COPY conda-environment.yml /work/conda-environment.yml
-RUN conda env create -y -n py35 python=3.5 --file conda-environment.yml
+RUN conda env create -n py35 python=3.5 --file conda-environment.yml
 
 # Use conda py35 environment by default
 ENV PATH /work/miniconda/envs/py35/bin:$PATH
