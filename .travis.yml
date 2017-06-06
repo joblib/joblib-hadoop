@@ -53,9 +53,9 @@ script:
     # HDFS store backend example
     - make docker-hdfs-example
     # YARN parallel backend example
-    # - make docker-yarn-example
+    - make docker-yarn-example
     # Unit testing from root of project
-    # - make docker-test
+    - make docker-test
 
 after_success:
     # Send coverage results to codecov
