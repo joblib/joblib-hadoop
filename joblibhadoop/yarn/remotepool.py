@@ -136,4 +136,3 @@ class RemotePool(Pool):
 
             debug('waiting for objects to be dereferenced')
             sleep(0.1)
-
