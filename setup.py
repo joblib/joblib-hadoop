@@ -15,6 +15,10 @@ if __name__ == '__main__':
           license='BSD',
           platforms='any',
           packages=find_packages(),
+          package_data={
+              '': ['joblibhadoop/resources/joblib-hadoop-environment.yml']
+          },
+          include_package_data=True,
           scripts=[pjoin('bin', 'joblib-yarn-worker')],
           install_requires=[
               'joblib>=0.10',

@@ -112,7 +112,7 @@ class RemotePool(Pool):
         remote_worker = RemoteWorker(pid)
         debug('starting remote worker %d', pid)
 
-        args = [self.workerscript,
+        args = ['$PYTHON_BIN $CONDA_PREFIX/bin/' + self.workerscript,
                 '--host', socket.gethostname(),
                 '--port', str(self.server.address[1]),
                 '--workerid', str(pid),

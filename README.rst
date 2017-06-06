@@ -157,7 +157,7 @@ Your containers should be in the state *Up*.
 
 ..  code-block:: bash
 
-   $ docker-compose run --rm -e JOBLIB_HDFS_NAMENODE=namenode nodemanager pytest
+   $ docker-compose run --rm -e JOBLIB_HDFS_NAMENODE=namenode joblib-hadoop-client make docker-pytest
 
 or locally:
 
