@@ -55,7 +55,7 @@ script:
 
     # Run HDFS store backend, YARN parallel backend examples and pytest
     # are run from the joblib-hadoop-client docker container
-    - make docker-all
+    - make run-all
 
 after_success:
     # Send coverage results to codecov

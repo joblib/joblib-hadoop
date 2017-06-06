@@ -13,6 +13,10 @@ run-examples:
 	cd docker && \
 		docker-compose run --rm -e JOBLIB_HDFS_NAMENODE=namenode joblib-hadoop-client make docker-examples
 
+run-all:
+	cd docker && \
+		docker-compose run --rm -e JOBLIB_HDFS_NAMENODE=namenode joblib-hadoop-client make docker-all
+
 # This is a helper target for gently stop/remove a running cluster
 docker-stop:
 	cd docker && docker-compose stop
