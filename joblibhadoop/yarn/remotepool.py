@@ -113,7 +113,7 @@ class RemotePool(Pool):
         remote_worker = RemoteWorker(pid)
         debug('starting remote worker %d', pid)
 
-        args = [os.path.join('$PY35_PATH', self.workerscript),
+        args = [self.workerscript,
                 '--host', socket.gethostname(),
                 '--port', str(self.server.address[1]),
                 '--workerid', str(pid),

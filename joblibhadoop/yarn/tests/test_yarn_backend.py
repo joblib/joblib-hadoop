@@ -10,10 +10,10 @@ from joblib import (Parallel, delayed,
 from joblibhadoop.yarn import YarnBackend
 from joblibhadoop.yarn.backend import __interrupts__
 
-__namenode__ = os.environ['NAMENODE']
+__NAMENODE = os.environ['JOBLIB_HDFS_NAMENODE']
 
 
-skip_localhost = pytest.mark.skipif(__namenode__ == 'localhost',
+skip_localhost = pytest.mark.skipif(__NAMENODE == 'localhost',
                                     reason="Cannot use nodemanager from "
                                            "localhost")
 

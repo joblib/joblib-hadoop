@@ -32,8 +32,8 @@ RUN conda env create -n py35 python=3.5 --file conda-environment.yml
 # Required for libhdfs3
 RUN conda install -n py35 -c clinicalgraphics libgcrypt11
 
-ENV PY35_PATH /work/miniconda/envs/py35/bin
-ENV PATH $PY35_PATH:$PATH
+# use conda py35 environment by default
+ENV PATH /work/miniconda/envs/py35/bin:$PATH
 
 # Install joblib-hadoop
 RUN git clone https://github.com/joblib/joblib-hadoop.git

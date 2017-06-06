@@ -3,8 +3,8 @@
 import socket
 from threading import Thread
 from time import sleep
-from knit import Knit
 from multiprocessing.util import debug
+from knit import Knit
 from .remotepool import RemotePool, RemoteWorker
 
 
@@ -19,7 +19,8 @@ class YarnPool(RemotePool):
         self.stopping = False
         self.knit = Knit(autodetect=True)
 
-        cmd = ('$PY35_PATH/joblib-yarn-worker --host {} --port {} --key {}'
+        cmd = ('joblib-yarn-worker '
+               '--host {} --port {} --key {}'
                .format(socket.gethostname(),
                        self.server.address[1],
                        self.authkey))

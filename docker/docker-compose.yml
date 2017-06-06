@@ -44,7 +44,7 @@ services:
     container_name: nodemanager
     build: nodemanager/.
     volumes:
-      - ..:/shared
+      - ..:/shared # required for code coverage
     depends_on:
       - namenode
       - datanode1
