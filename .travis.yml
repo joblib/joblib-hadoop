@@ -48,16 +48,14 @@ install:
 
 script:
     # Run local unit tests first
-    - pytest
+    - make test
     # All examples/tests are run from a docker container
-    - cd docker
     # HDFS store backend example
-    - docker-compose run --rm --name testnode nodemanager python examples/joblib_hdfs_multiply.py
+    - make docker-hdfs-example
     # YARN parallel backend example
-    # - docker-compose run --rm --name testnode nodemanager python examples/joblib_yarn_parallel.py
+    # - make docker-yarn-example
     # Unit testing from root of project
-    # - docker-compose run --rm --name testnode -e JOBLIB_HDFS_NAMENODE=namenode nodemanager make docker-test
-    - cd ..
+    # - make docker-test
 
 after_success:
     # Send coverage results to codecov
