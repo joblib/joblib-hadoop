@@ -17,7 +17,15 @@ run-all:
 	cd docker && \
 		docker-compose run --rm -e JOBLIB_HDFS_NAMENODE=namenode joblib-hadoop-client make docker-all
 
-# This is a helper target for gently stop/remove a running cluster
+run-container:
+	cd docker && \
+		docker-compose run --rm -e JOBLIB_HDFS_NAMENODE=namenode joblib-hadoop-client bash
+
+# Start the Hadoop cluster
+docker-start:
+	cd docker && docker-compose up
+
+# Gently stop/remove a running Hadoop cluster
 docker-stop:
 	cd docker && docker-compose stop
 	cd docker && docker-compose rm -f

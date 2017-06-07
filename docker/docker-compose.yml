@@ -71,10 +71,19 @@ services:
     env_file:
       - ./hadoop.env
 
+  datanode3:
+    image: bde2020/hadoop-datanode:1.1.0-hadoop2.7.1-java8
+    container_name: datanode3
+    depends_on:
+      - namenode
+    volumes:
+      - hadoop_datanode3:/hadoop/dfs/data
+    env_file:
+      - ./hadoop.env
+
   joblib-hadoop-client:
     image: joblib/joblib-hadoop-client:latest
     container_name: joblib-hadoop-client
-    build: joblib-hadoop-client/.
     volumes:
       - ..:/shared # required for code coverage
     env_file:
@@ -84,4 +93,5 @@ volumes:
   hadoop_namenode:
   hadoop_datanode1:
   hadoop_datanode2:
+  hadoop_datanode3:
   hadoop_historyserver:
