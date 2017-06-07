@@ -59,7 +59,7 @@ script:
 
 after_success:
     # Send coverage results to codecov
-    - sed -i "s/${PWD//\//\\/}\/joblib-hadoop/\/shared/" joblib-hadoop/.coverage
+    - sed -i "s/\/shared/${PWD//\//\\/}\/joblib-hadoop/" joblib-hadoop/.coverage
     - codecov
 
 after_failure:
