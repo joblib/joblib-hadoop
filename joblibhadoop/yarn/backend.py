@@ -17,7 +17,6 @@ class YarnBackend(ThreadingBackend):
         self._pool = None
         self.parallel = None
 
-
     def effective_n_jobs(self, n_jobs):
         """Return the number of effective jobs running in the backend."""
         if n_jobs == 0:

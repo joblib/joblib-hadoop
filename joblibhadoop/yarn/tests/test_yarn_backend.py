@@ -49,7 +49,7 @@ def test_parallel_backend_njobs():
     register_parallel_backend('yarn', YarnBackend)
 
     # Run in parallel using Yarn backend
-    with parallel_backend('yarn', n_jobs=5):
+    with parallel_backend('yarn', n_jobs=5, packages=['scikit-learn']):
         result = Parallel(verbose=100)(
             delayed(sqrt)(i**2) for i in range(100))
 
