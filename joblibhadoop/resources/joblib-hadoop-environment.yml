@@ -3,10 +3,10 @@ channels:
 dependencies:
     - python=3.5
     - pip
-    - setuptools
     - libhdfs3
     - numpy
     - pip:
+        - setuptools
         - git+https://github.com/dask/hdfs3.git@master#egg=hdfs3
         - git+https://github.com/aabadie/joblib.git@storage_backend_2#egg=joblib
         - git+https://github.com/joblib/joblib-hadoop@master#egg=joblibhadoop

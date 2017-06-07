@@ -1,5 +1,5 @@
 channels:
-  - dask
+  - conda-forge
 dependencies:
   - pip
   - setuptools
