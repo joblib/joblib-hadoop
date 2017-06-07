@@ -20,7 +20,7 @@ CONDA_ENV_CREATE_COMMAND = 'conda env create -p {} --file={}'
 CONDA_ENV_INSTALL_COMMAND = 'conda install -y -q -p {} {}'
 
 
-def create_conda_env(*extra_packages):
+def create_conda_env(*packages):
     """Create a conda environment to pass to Knit"""
     # Create conda environment
     if os.path.isfile(os.path.join(TEMP_DIR, JOBLIB_YARN_CONDA_ENV + '.zip')):
@@ -29,10 +29,10 @@ def create_conda_env(*extra_packages):
     os.system(CONDA_ENV_CREATE_COMMAND.format(
         os.path.join(TEMP_DIR, JOBLIB_YARN_CONDA_ENV),
         conda_environment_filename()))
-    if len(*extra_packages):
+    if len(packages):
         os.system(CONDA_ENV_INSTALL_COMMAND.format(
             os.path.join(TEMP_DIR, JOBLIB_YARN_CONDA_ENV),
-            ' '.join(*extra_packages)))
+            ' '.join(packages)))
     # Archive conda environment
     shutil.make_archive(os.path.join(TEMP_DIR, JOBLIB_YARN_CONDA_ENV), 'zip',
                         root_dir=TEMP_DIR,
@@ -42,14 +42,14 @@ def create_conda_env(*extra_packages):
 class YarnPool(RemotePool):
     """The Yarn Pool mananger."""
 
-    def __init__(self, processes=None, port=0, authkey=None):
+    def __init__(self, processes=None, port=0, authkey=None, packages=[]):
         super(YarnPool, self).__init__(processes=processes,
                                        port=port,
                                        authkey=authkey,
                                        workerscript=JOBLIB_YARN_WORKER)
         self.stopping = False
         self.knit = Knit(autodetect=True)
-        create_conda_env([])
+        create_conda_env(*packages)
         cmd = ('$PYTHON_BIN $CONDA_PREFIX/bin/{} --host {} --port {} --key {}'
                .format(JOBLIB_YARN_WORKER,
                        socket.gethostname(),

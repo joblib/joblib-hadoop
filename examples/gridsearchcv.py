@@ -57,7 +57,7 @@ for score in scores:
 
     clf = GridSearchCV(SVC(C=1), tuned_parameters, cv=5,
                        scoring='%s_weighted' % score, n_jobs=4)
-    with parallel_backend('yarn'):
+    with parallel_backend('yarn', packages=['scikit-learn']):
         clf.fit(X_train, y_train)
 
     print("Best parameters set found on development set:")
