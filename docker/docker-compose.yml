@@ -84,7 +84,6 @@ services:
   joblib-hadoop-client:
     image: joblib/joblib-hadoop-client:latest
     container_name: joblib-hadoop-client
-    build: joblib-hadoop-client/.
     volumes:
       - ..:/shared # required for code coverage
     env_file:
