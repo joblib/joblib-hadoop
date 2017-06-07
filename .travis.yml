@@ -51,7 +51,7 @@ install:
 
 script:
     # Run local unit tests first
-    - make test
+    # - make test
 
     # Run HDFS store backend, YARN parallel backend examples and pytest
     # are run from the joblib-hadoop-client docker container
