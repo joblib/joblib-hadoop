@@ -1,4 +1,4 @@
-.PHONY: all test docker-test docker-pytest docker-hdfs-clear docker-stop
+.PHONY: all test docker-test docker-pytest docker-hdfs-clear docker-stop docker-all
 
 all: test
 
