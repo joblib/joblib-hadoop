@@ -60,7 +60,7 @@ docker-pytest: install hdfs-clear test
 
 docker-examples: install examples
 
-docker-all: install examples hdfs-clear test
+docker-all: docker-pytest docker-examples
 
 # Pytest creates the Memory cache test results in /user/test in the hdfs
 # cluster, this target ensures we start from a fresh setup.
