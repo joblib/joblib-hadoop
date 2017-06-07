@@ -7,6 +7,7 @@ test:
 	pytest
 
 install:
+	pip install setuptools --upgrade
 	pip install -r requirements.txt . --upgrade
 
 run-examples:
