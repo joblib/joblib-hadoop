@@ -11,8 +11,11 @@ __interrupts__ = [KeyboardInterrupt, WorkerInterrupt]
 class YarnBackend(ThreadingBackend):
     """The YARN backend class."""
 
-    _pool = None
-    parallel = None
+    def __init__(self, packages=[]):
+        """Constructor"""
+        self.packages = packages
+        self._pool = None
+        self.parallel = None
 
     def effective_n_jobs(self, n_jobs):
         """Return the number of effective jobs running in the backend."""
@@ -27,7 +30,7 @@ class YarnBackend(ThreadingBackend):
     def configure(self, n_jobs, parallel=None, **backend_args):
         """Initialize the backend."""
         n_jobs = self.effective_n_jobs(n_jobs)
-        self._pool = YarnPool(processes=n_jobs)
+        self._pool = YarnPool(processes=n_jobs, packages=self.packages)
         self.parallel = parallel
         return n_jobs
 
