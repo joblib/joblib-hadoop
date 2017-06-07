@@ -50,12 +50,8 @@ install:
     - cd docker && docker-compose ps && cd ..
 
 script:
-    # Run local unit tests first
-    # - make test
-
-    # Run HDFS store backend, YARN parallel backend examples and pytest
-    # are run from the joblib-hadoop-client docker container
-    - make run-all
+    # Run pytest from the joblib-hadoop-client docker container
+    - make docker-test
 
 after_success:
     - echo ${PWD}
