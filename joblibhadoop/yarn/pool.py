@@ -16,8 +16,8 @@ JOBLIB_YARN_WORKER = 'joblib-yarn-worker'
 JOBLIB_YARN_CONDA_ENV = 'conda_env'
 
 TEMP_DIR = os.environ.get('JOBLIB_TEMP_FOLDER', tempfile.gettempdir())
-CONDA_ENV_CREATE_COMMAND = 'conda env create -q -p {} --file={}'
-CONDA_ENV_INSTALL_COMMAND = 'conda install -y -q -p /tmp/{} {}'
+CONDA_ENV_CREATE_COMMAND = 'conda env create -p {} --file={}'
+CONDA_ENV_INSTALL_COMMAND = 'conda install -y -q -p {} {}'
 
 
 def create_conda_env(*extra_packages):
@@ -30,7 +30,9 @@ def create_conda_env(*extra_packages):
         os.path.join(TEMP_DIR, JOBLIB_YARN_CONDA_ENV),
         conda_environment_filename()))
     if len(*extra_packages):
-        os.system(CONDA_ENV_INSTALL_COMMAND.format(' '.join(*extra_packages)))
+        os.system(CONDA_ENV_INSTALL_COMMAND.format(
+            os.path.join(TEMP_DIR, JOBLIB_YARN_CONDA_ENV),
+            ' '.join(*extra_packages)))
     # Archive conda environment
     shutil.make_archive(os.path.join(TEMP_DIR, JOBLIB_YARN_CONDA_ENV), 'zip',
                         root_dir=TEMP_DIR,

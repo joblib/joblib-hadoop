@@ -1,5 +1,5 @@
 channels:
-    - conda-forge 
+    - conda-forge
 dependencies:
     - python=3.5
     - pip
