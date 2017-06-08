@@ -12,17 +12,19 @@ from knit import Knit
 from .remotepool import RemotePool, RemoteWorker
 from ..resources import conda_environment_filename
 
+TEMP_DIR = os.environ.get('JOBLIB_TEMP_FOLDER', tempfile.gettempdir())
+
 JOBLIB_YARN_WORKER = 'joblib-yarn-worker'
 JOBLIB_YARN_DEFAULT_CONDA_ENV = 'joblib_yarn_conda_env'
+JOBLIB_YARN_DEFAULT_CONDA_ROOT = TEMP_DIR
 
-TEMP_DIR = os.environ.get('JOBLIB_TEMP_FOLDER', tempfile.gettempdir())
 CONDA_ENV_CREATE_COMMAND = 'conda env create -p {} --file={}'
 CONDA_ENV_INSTALL_COMMAND = 'conda install -y -q -p {} {}'
 
 
-def create_conda_env(env, packages, clear):
+def _create_conda_env(env, env_root_path, packages, clear):
     """Create a conda environment to pass to Knit"""
-    env_dir = os.path.join(TEMP_DIR, env)
+    env_dir = os.path.join(env_root_path, env)
     env_file = env_dir + '.zip'
     if clear:
         # Remove an existing env directory
@@ -44,22 +46,23 @@ def create_conda_env(env, packages, clear):
                 env_dir, ' '.join(packages)))
 
     # Archive conda environment
-    shutil.make_archive(env_dir, 'zip', root_dir=TEMP_DIR, base_dir=env)
+    shutil.make_archive(env_dir, 'zip', root_dir=env_root_path, base_dir=env)
 
 
 class YarnPool(RemotePool):
     """The Yarn Pool mananger."""
 
     def __init__(self, processes=None, port=0, authkey=None,
-                 env=JOBLIB_YARN_DEFAULT_CONDA_ENV, packages=[],
-                 clear_env=False):
+                 env=JOBLIB_YARN_DEFAULT_CONDA_ENV,
+                 env_root_path=JOBLIB_YARN_DEFAULT_CONDA_ROOT,
+                 packages=[], clear_env=False):
         super(YarnPool, self).__init__(processes=processes,
                                        port=port,
                                        authkey=authkey,
                                        workerscript=JOBLIB_YARN_WORKER)
         self.stopping = False
         self.knit = Knit(autodetect=True)
-        create_conda_env(env, packages, clear_env)
+        _create_conda_env(env, env_root_path, packages, clear_env)
         cmd = ('$PYTHON_BIN $CONDA_PREFIX/bin/{} --host {} --port {} --key {}'
                .format(JOBLIB_YARN_WORKER,
                        socket.gethostname(),

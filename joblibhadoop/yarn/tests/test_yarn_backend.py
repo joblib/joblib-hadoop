@@ -3,6 +3,7 @@
 import os
 import os.path
 import shutil
+import tempfile
 from math import sqrt
 
 import pytest
@@ -12,8 +13,9 @@ from joblib import (Parallel, delayed,
                     register_parallel_backend, parallel_backend)
 from joblibhadoop.yarn import YarnBackend
 from joblibhadoop.yarn.backend import JOBLIB_YARN_INTERRUPTS
-from joblibhadoop.yarn.pool import (create_conda_env,
-                                    TEMP_DIR, JOBLIB_YARN_DEFAULT_CONDA_ENV)
+from joblibhadoop.yarn.pool import (_create_conda_env,
+                                    JOBLIB_YARN_DEFAULT_CONDA_ENV,
+                                    JOBLIB_YARN_DEFAULT_CONDA_ROOT)
 
 JOBLIB_HDFS_NAMENODE = os.environ['JOBLIB_HDFS_NAMENODE']
 
@@ -24,23 +26,26 @@ skip_localhost = pytest.mark.skipif(JOBLIB_HDFS_NAMENODE == 'localhost',
 
 
 @mark.parametrize('packages', [[], ['pandas']])
-def test_create_conda_env(packages):
+def test_create_conda_env(tmpdir, packages):
     """Test conda env creation works as expected."""
+    assert tempfile.gettempdir() == JOBLIB_YARN_DEFAULT_CONDA_ROOT
+
     env = JOBLIB_YARN_DEFAULT_CONDA_ENV
-    env_dir = os.path.join(TEMP_DIR, env)
+    env_dir = tmpdir.join(env).strpath
+    root_dir = tmpdir.strpath
     env_file = env_dir + '.zip'
 
-    create_conda_env(env, packages, False)
+    _create_conda_env(env, root_dir, packages, False)
 
     assert os.path.isdir(env_dir)
     assert os.path.isfile(env_file)
 
-    create_conda_env(env, packages, True)
+    _create_conda_env(env, root_dir, packages, True)
 
     assert os.path.isdir(env_dir)
     assert os.path.isfile(env_file)
 
-    create_conda_env(env, packages, False)
+    _create_conda_env(env, root_dir, packages, False)
 
     assert os.path.isdir(env_dir)
     assert os.path.isfile(env_file)
