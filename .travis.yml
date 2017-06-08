@@ -23,24 +23,12 @@ before_install:
     - sudo mv docker-compose /usr/local/bin
 
     # Clean up docker cache and start the Hadoop cluster
-    - cd docker
     - docker system prune -af
-    - docker-compose up -d
-    - cd ..
+    - cd docker && docker-compose up -d && cd ..
+    # Wait a bit for the cluster to be up
+    - sleep 30
 
 install:
-    # Install miniconda environment
-    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - conda config --set always_yes yes --set changeps1 no
-    - conda update -y -q conda
-    - conda create -y -q -n test-environment python=$TRAVIS_PYTHON_VERSION libhdfs3 -c conda-forge
-    - source activate test-environment
-
-    # Install joblib-hadoop
-    - pip install -r requirements.txt .
-
     # Some checks on docker and Hadoop cluster health
     - docker-compose --version
     - docker --version
@@ -54,11 +42,11 @@ script:
     - make docker-test
 
 after_success:
-    - echo ${PWD}
-    - head coverage.xml
     # Send coverage results to codecov
+    # The coverage was generated inside the container, we need to replace the
+    # /shared folder occurences with the host project path since codecov
+    # doesn't handle correctly
     - sed -i "s/\/shared/${PWD//\//\\/}/" coverage.xml
-    - head coverage.xml
     - codecov
 
 after_failure:
