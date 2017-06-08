@@ -20,7 +20,7 @@ CONDA_ENV_CREATE_COMMAND = 'conda env create -p {} --file={}'
 CONDA_ENV_INSTALL_COMMAND = 'conda install -y -q -p {} {}'
 
 
-def create_conda_env(env, clear, *packages):
+def create_conda_env(env, packages, clear):
     """Create a conda environment to pass to Knit"""
     env_dir = os.path.join(TEMP_DIR, env)
     env_file = env_dir + '.zip'
@@ -59,7 +59,7 @@ class YarnPool(RemotePool):
                                        workerscript=JOBLIB_YARN_WORKER)
         self.stopping = False
         self.knit = Knit(autodetect=True)
-        create_conda_env(env, clear_env, *packages)
+        create_conda_env(env, packages, clear_env)
         cmd = ('$PYTHON_BIN $CONDA_PREFIX/bin/{} --host {} --port {} --key {}'
                .format(JOBLIB_YARN_WORKER,
                        socket.gethostname(),

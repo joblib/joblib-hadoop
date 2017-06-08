@@ -30,17 +30,17 @@ def test_create_conda_env(packages):
     env_dir = os.path.join(TEMP_DIR, env)
     env_file = env_dir + '.zip'
 
-    create_conda_env(env, False, *packages)
+    create_conda_env(env, packages, False)
 
     assert os.path.isdir(env_dir)
     assert os.path.isfile(env_file)
 
-    create_conda_env(env, True, *packages)
+    create_conda_env(env, packages, True)
 
     assert os.path.isdir(env_dir)
     assert os.path.isfile(env_file)
 
-    create_conda_env(env, False, *packages)
+    create_conda_env(env, packages, False)
 
     assert os.path.isdir(env_dir)
     assert os.path.isfile(env_file)
