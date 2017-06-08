@@ -108,12 +108,24 @@ All examples are available in the `examples <examples>`_ directory.
 Developping with joblibhadoop
 =============================
 
+In order to run the test suite, you need to setup a local hadoop cluster inside
+Docker containers. This can be achieved very easily using the recipes available
+in the `docker <docker>`_ directory and with the provided Makefile targets.
+
+To avoid problems when accessing an Hadoop cluster using `localhost`,
+joblib-hadoop provides the `joblib-hadoop-client` container. This container has
+Hadoop 2.7.0 installed and is thus fully functionnal for playing locally with
+the hadoop cluster.
+
+Another important point is that the root directory of this project is shared
+with the `/shared` directory inside the Hadoop client container. Thanks to this
+trick, one can code on the host and test in the container without having to
+rebuild it.
+
 Prerequisites
 -------------
 
-In order to run the test suite, you need to setup a local hadoop cluster. This
-can be achieved very easily using the docker and docker-compose recipes given
-in the `docker <docker>`_ directory:
+There are some prerequisites to check before going further.
 
 1. `Install docker-engine <https://docs.docker.com/engine/installation/>`_:
 
@@ -140,10 +152,11 @@ You have to be able to run the hello-world container:
 Running the test suite
 ----------------------
 
-The test suite can be launched from another container of the Hadoop
-nodemanager. This is achieved very easily using docker-compose.
+The test suite has to be launched from the `joblib-hadoop-client` container of
+the docker-compose configuration. This is achieved very easily with `docker-test`
+Makefile target.
 
-1. Ensure your hadoop cluster is already started:
+1. First, ensure your hadoop cluster is already started:
 
 ..  code-block:: bash
 
@@ -151,25 +164,37 @@ nodemanager. This is achieved very easily using docker-compose.
    $ docker-compose up -d
    $ docker-compose ps
 
-Your containers should be in the state *Up*.
+Your containers should all be in the state *Up* except `joblib-hadoop-client`
+that should have exited with code 0.
 
-2. You can start pytest from a nodemanager container instance:
-
-..  code-block:: bash
-
-   $ docker-compose run --rm -e JOBLIB_HDFS_NAMENODE=namenode joblib-hadoop-client make docker-pytest
-
-or locally:
+2. You can now start the test suite with:
 
 ..  code-block:: bash
 
-   $ pytest
+   $ cd joblib-hadoop
+   $ make docker-test
 
-3. After changes in the code, the nodemanager image needs to be rebuild:
 
-..  code-block:: bash
+If you want to access the container directly and test some customizations or
+run examples. We provided the other following targets to be
+**run from your host**:
 
-   $ docker-compose build --no-cache nodemanager
+- **make run-container**: start an interactive shell in the
+`joblib-hadoop-client` container
+
+- **make run-examples**: start a new container, install joblib-hadoop and run
+the examples
+
+Here we list the helpers to be **run from the container**:
+
+- **make install**: install joblib-hadoop in the container once logged in (you
+need to be in the container with make run-container first)
+
+- **make run-hdfs-example**: run the HDFS Memory multiply example with the
+cluster.
+
+- **make run-yarb-example**: run the YARN parallel backend example on the
+cluster.
 
 
 .. _build_libhdfs3:
