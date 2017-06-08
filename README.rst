@@ -180,21 +180,19 @@ run examples. We provided the other following targets to be
 **run from your host**:
 
 - **make run-container**: start an interactive shell in the
-`joblib-hadoop-client` container
+  `joblib-hadoop-client` container
 
 - **make run-examples**: start a new container, install joblib-hadoop and run
-the examples
+  the examples
 
 Here we list the helpers to be **run from the container**:
 
-- **make install**: install joblib-hadoop in the container once logged in (you
-need to be in the container with make run-container first)
+- **make install**: install joblib-hadoop in the container once logged in
+  (you need to be in the container with make run-container first)
 
-- **make run-hdfs-example**: run the HDFS Memory multiply example with the
-cluster.
+- **make run-hdfs-example**: run the HDFS Memory multiply example with the cluster.
 
-- **make run-yarb-example**: run the YARN parallel backend example on the
-cluster.
+- **make run-yarb-example**: run the YARN parallel backend example on the cluster.
 
 
 .. _build_libhdfs3:
