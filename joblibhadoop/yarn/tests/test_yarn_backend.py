@@ -1,21 +1,57 @@
 """Test the yarn parallel backend."""
 
 import os
+import os.path
+import shutil
+import tempfile
 from math import sqrt
 
 import pytest
+from pytest import mark
 
 from joblib import (Parallel, delayed,
                     register_parallel_backend, parallel_backend)
 from joblibhadoop.yarn import YarnBackend
-from joblibhadoop.yarn.backend import __interrupts__
+from joblibhadoop.yarn.backend import JOBLIB_YARN_INTERRUPTS
+from joblibhadoop.yarn.pool import (_create_conda_env,
+                                    JOBLIB_YARN_DEFAULT_CONDA_ENV,
+                                    JOBLIB_YARN_DEFAULT_CONDA_ROOT)
 
-__NAMENODE = os.environ['JOBLIB_HDFS_NAMENODE']
+JOBLIB_HDFS_NAMENODE = os.environ['JOBLIB_HDFS_NAMENODE']
 
 
-skip_localhost = pytest.mark.skipif(__NAMENODE == 'localhost',
+skip_localhost = pytest.mark.skipif(JOBLIB_HDFS_NAMENODE == 'localhost',
                                     reason="Cannot use nodemanager from "
                                            "localhost")
+
+
+@mark.parametrize('packages', [[], ['pandas']])
+def test_create_conda_env(tmpdir, packages):
+    """Test conda env creation works as expected."""
+    assert tempfile.gettempdir() == JOBLIB_YARN_DEFAULT_CONDA_ROOT
+
+    env = JOBLIB_YARN_DEFAULT_CONDA_ENV
+    env_dir = tmpdir.join(env).strpath
+    root_dir = tmpdir.strpath
+    env_file = env_dir + '.zip'
+
+    _create_conda_env(env, root_dir, packages, False)
+
+    assert os.path.isdir(env_dir)
+    assert os.path.isfile(env_file)
+
+    _create_conda_env(env, root_dir, packages, True)
+
+    assert os.path.isdir(env_dir)
+    assert os.path.isfile(env_file)
+
+    _create_conda_env(env, root_dir, packages, False)
+
+    assert os.path.isdir(env_dir)
+    assert os.path.isfile(env_file)
+
+    shutil.rmtree(env_dir, ignore_errors=True)
+    os.remove(env_file)
 
 
 def test_supported_interrupt():
@@ -23,7 +59,7 @@ def test_supported_interrupt():
     register_parallel_backend('yarn', YarnBackend)
 
     backend = YarnBackend()
-    assert backend.get_exceptions() == __interrupts__
+    assert backend.get_exceptions() == JOBLIB_YARN_INTERRUPTS
 
 
 def test_parallel_invalid_njobs_raises_value_error():
@@ -32,14 +68,12 @@ def test_parallel_invalid_njobs_raises_value_error():
 
     with pytest.raises(ValueError) as excinfo:
         with parallel_backend('yarn'):
-            result = Parallel(verbose=100)(
-                delayed(sqrt)(i**2) for i in range(100))
+            Parallel(verbose=100)(delayed(sqrt)(i**2) for i in range(100))
     assert 'n_jobs < 0 is not implemented yet' in str(excinfo.value)
 
     with pytest.raises(ValueError) as excinfo:
         with parallel_backend('yarn', n_jobs=0):
-            result = Parallel(verbose=100)(
-                delayed(sqrt)(i**2) for i in range(100))
+            Parallel(verbose=100)(delayed(sqrt)(i**2) for i in range(100))
     assert 'n_jobs == 0 in Parallel has no meaning' in str(excinfo.value)
 
 

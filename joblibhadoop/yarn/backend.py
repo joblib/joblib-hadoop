@@ -2,20 +2,23 @@
 
 from joblib._parallel_backends import ThreadingBackend
 from joblib.my_exceptions import WorkerInterrupt
-from .pool import YarnPool
+from .pool import YarnPool, JOBLIB_YARN_DEFAULT_CONDA_ENV
 
 
-__interrupts__ = [KeyboardInterrupt, WorkerInterrupt]
+JOBLIB_YARN_INTERRUPTS = [KeyboardInterrupt, WorkerInterrupt]
 
 
 class YarnBackend(ThreadingBackend):
     """The YARN backend class."""
 
-    def __init__(self, packages=[]):
+    def __init__(self, env=JOBLIB_YARN_DEFAULT_CONDA_ENV, packages=[],
+                 clear_env=False):
         """Constructor"""
         self.packages = packages
         self._pool = None
         self.parallel = None
+        self.env = env
+        self.clear_env = clear_env
 
     def effective_n_jobs(self, n_jobs):
         """Return the number of effective jobs running in the backend."""
@@ -30,7 +33,8 @@ class YarnBackend(ThreadingBackend):
     def configure(self, n_jobs, parallel=None, **backend_args):
         """Initialize the backend."""
         n_jobs = self.effective_n_jobs(n_jobs)
-        self._pool = YarnPool(processes=n_jobs, packages=self.packages)
+        self._pool = YarnPool(processes=n_jobs, env=self.env,
+                              packages=self.packages, clear_env=self.clear_env)
         self.parallel = parallel
         return n_jobs
 
@@ -38,4 +42,4 @@ class YarnBackend(ThreadingBackend):
         """Return the list of interrupt supported by the backend."""
         # We are using multiprocessing, we also want to capture
         # KeyboardInterrupts
-        return __interrupts__
+        return JOBLIB_YARN_INTERRUPTS

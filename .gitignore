@@ -34,6 +34,7 @@ doc/CHANGES.rst
 doc/README.rst
 # Coverage report
 .coverage
+coverage.xml
 # Pytest
 .cache
 # Python cache
