@@ -14,7 +14,7 @@ env:
 before_install:
     # Install latest available version of docker
     - sudo apt-get update
-    - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine make
+    - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-ce make
 
     # Install a more recent version of docker-compose
     - sudo rm /usr/local/bin/docker-compose
