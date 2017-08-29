@@ -22,7 +22,8 @@ if __name__ == '__main__':
           scripts=[pjoin('bin', 'joblib-yarn-worker')],
           install_requires=[
               'joblib>=0.10',
-              'knit>=0.2'
+              'knit>=0.2',
+              'hdfs3==0.1.4'
           ],
           zip_safe=False,
          )
