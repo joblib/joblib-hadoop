@@ -4,19 +4,21 @@ import datetime
 import re
 import os.path
 import hdfs3
-from joblib._store_backends import (StoreBackendBase, StoreManagerMixin,
+from joblib._store_backends import (StoreBackendBase, StoreBackendMixin,
                                     CacheItemInfo)
 
 
-class HDFSStoreBackend(StoreBackendBase, StoreManagerMixin):
+class HDFSStoreBackend(StoreBackendBase, StoreBackendMixin):
     """A StoreBackend for Hadoop storage file system (HDFS)."""
 
-    def __init__(self):
-        self.mv = None
-        self.storage = None
-        self.cachedir = None
-        self.compress = None
-        self.mmap_mode = None
+    def _open_item(self, f, mode):
+        return self.storage.open(f, mode)
+
+    def _item_exists(self, path):
+        return self.storage.exists(path)
+
+    def _move_item(self, src, dst):
+        return self.storage.mv(src, dst)
 
     def clear_location(self, location):
         """Check if object exists in store."""
@@ -26,15 +28,15 @@ class HDFSStoreBackend(StoreBackendBase, StoreManagerMixin):
         """Create object location on store."""
         self._mkdirp(location)
 
-    def get_cache_items(self):
+    def get_items(self):
         """Return the whole list of items available in cache."""
         cache_items = []
         try:
-            self.storage.ls(self.cachedir)
+            self.storage.ls(self._location)
         except IOError:
             return []
 
-        for path in self.storage.walk(self.cachedir):
+        for path in self.storage.walk(self._location):
             is_cache_hash_dir = re.match('[a-f0-9]{32}$',
                                          os.path.basename(path))
 
@@ -56,27 +58,50 @@ class HDFSStoreBackend(StoreBackendBase, StoreManagerMixin):
 
         return cache_items
 
-    def configure(self, location, host='localhost', port=9000, user=None,
-                  ticket_cache=None, token=None, pars=None, connect=True,
-                  **kwargs):
+    def _prepare_options(self, store_options):
+        if 'host' not in store_options:
+            store_options['host'] = 'localhost'
+
+        if 'port' not in store_options:
+            store_options['port'] = 9000
+
+        if 'user' not in store_options:
+            store_options['user'] = None
+
+        if 'ticket_cache' not in store_options:
+            store_options['ticket_cache'] = None
+
+        if 'token' not in store_options:
+            store_options['token'] = None
+
+        if 'pars' not in store_options:
+            store_options['pars'] = None
+
+        if 'connect' not in store_options:
+            store_options['connect'] = True
+
+        return store_options
+
+    def configure(self, location, verbose=0,
+                  store_options=dict(host='localhost', port=9000, user=None,
+                                     ticket_cache=None, token=None, pars=None,
+                                     connect=True)):
         """Configure the store backend."""
-        self.storage = hdfs3.HDFileSystem(host=host, port=port, user=user,
-                                          ticket_cache=ticket_cache,
-                                          token=token, pars=pars,
-                                          connect=connect)
+
+        store_options = self._prepare_options(store_options)
+        self.storage = hdfs3.HDFileSystem(
+            host=store_options['host'], port=store_options['port'],
+            user=store_options['user'],
+            ticket_cache=store_options['ticket_cache'],
+            token=store_options['token'], pars=store_options['pars'],
+            connect=store_options['connect'])
         if location.startswith('/'):
             location = location[1:]
-        self.cachedir = os.path.join(location, 'joblib')
-        self.storage.mkdir(self.cachedir)
-
-        # attach required methods using monkey patching trick.
-        self.open_object = self.storage.open
-        self.object_exists = self.storage.exists
-        self.mv = self.storage.mv
+        self._location = location
+        self.storage.mkdir(self._location)
 
         # computation results can be stored compressed for faster I/O
-        self.compress = (False if 'compress' not in kwargs
-                         else kwargs['compress'])
+        self.compress = store_options['compress']
 
         # Memory map mode is not supported
         self.mmap_mode = None

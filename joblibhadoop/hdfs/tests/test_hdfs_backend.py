@@ -12,7 +12,7 @@ from pytest import mark
 from joblib import Memory
 from joblibhadoop.hdfs import register_hdfs_store_backend
 
-__NAMENODE = os.environ['JOBLIB_HDFS_NAMENODE']
+NAMENODE = os.environ['JOBLIB_HDFS_NAMENODE']
 
 
 @mark.parametrize("compress", [True, False])
@@ -32,10 +32,12 @@ def test_store_and_retrieve(capsys, tmpdir, compress, arg):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=tmpdir.strpath[1:], host=__NAMENODE,
-                 backend='hdfs', user='test', verbose=0, compress=compress)
+    mem = Memory(location=tmpdir.strpath[1:], backend='hdfs',
+                 verbose=0, compress=compress,
+                 store_options=dict(host=NAMENODE, user='test'))
 
-    assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
+    assert mem.store_backend._location == os.path.join(tmpdir.strpath[1:],
+                                                       "joblib")
 
     func = mem.cache(func)
 
@@ -69,10 +71,11 @@ def test_root_location_replacement(tmpdir):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=location, host=__NAMENODE,
-                 backend='hdfs', user='test', verbose=100)
+    mem = Memory(location=location, backend='hdfs', verbose=100,
+                 store_options=dict(host=NAMENODE, user='test'))
 
-    assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
+    assert mem.store_backend._location == os.path.join(tmpdir.strpath[1:],
+                                                       "joblib")
 
 
 def test_passing_backend_base_to_memory(tmpdir):
@@ -80,15 +83,16 @@ def test_passing_backend_base_to_memory(tmpdir):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=tmpdir.strpath, host=__NAMENODE,
-                 backend='hdfs', user='test', verbose=100)
+    mem = Memory(location=tmpdir.strpath, backend='hdfs', verbose=100,
+                 store_options=dict(host=NAMENODE, user='test'))
 
-    assert mem.store.cachedir == os.path.join(tmpdir.strpath[1:], "joblib")
+    assert mem.store_backend._location == os.path.join(tmpdir.strpath[1:],
+                                                       "joblib")
 
-    mem2 = Memory(location=mem.store, host=__NAMENODE,
-                  backend='hdfs', user='test', verbose=100)
+    mem2 = Memory(location=mem.store_backend, backend='hdfs', verbose=100,
+                  store_options=dict(host=NAMENODE, user='test'))
 
-    assert mem2.store.cachedir == mem.store.cachedir
+    assert mem2.store_backend._location == mem.store_backend._location
 
 
 def test_clear_cache(tmpdir):
@@ -100,17 +104,18 @@ def test_clear_cache(tmpdir):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=tmpdir.strpath, host=__NAMENODE,
-                 backend='hdfs', user='test', verbose=100, compress=False)
+    mem = Memory(location=tmpdir.strpath, backend='hdfs',
+                 verbose=100, compress=False,
+                 store_options=dict(host=NAMENODE, user='test'))
     cached_func = mem.cache(func)
     cached_func("test")
 
     mem.clear()
 
-    assert not mem.store.object_exists(mem.store.cachedir)
+    assert not mem.store_backend._item_exists(mem.store_backend._location)
 
 
-def test_get_cache_items(tmpdir):
+def test_get_items(tmpdir):
     """Test cache items listing."""
     def func(arg):
         """Dummy function."""
@@ -118,16 +123,17 @@ def test_get_cache_items(tmpdir):
 
     register_hdfs_store_backend()
 
-    mem = Memory(location=tmpdir.strpath, host=__NAMENODE,
-                 backend='hdfs', user='test', verbose=100, compress=False)
-    assert not mem.store.get_cache_items()
+    mem = Memory(location=tmpdir.strpath, backend='hdfs',
+                 verbose=100, compress=False,
+                 store_options=dict(host=NAMENODE, user='test'))
+    assert not mem.store_backend.get_items()
 
     cached_func = mem.cache(func)
     for arg in ["test1", "test2", "test3"]:
         cached_func(arg)
 
-    # get_cache_items always returns an empty list for the moment
-    assert len(mem.store.get_cache_items()) == 3
+    # get_items always returns an empty list for the moment
+    assert len(mem.store_backend.get_items()) == 3
 
     mem.clear()
-    assert not mem.store.get_cache_items()
+    assert not mem.store_backend.get_items()
