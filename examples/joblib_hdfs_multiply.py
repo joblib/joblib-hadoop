@@ -7,9 +7,9 @@ from joblibhadoop.hdfs import register_hdfs_store_backend
 if __name__ == '__main__':
     register_hdfs_store_backend()
 
-    mem = Memory(location='joblib_cache_hdfs',
-                 backend='hdfs', host='namenode', port=9000, user='test',
-                 verbose=100, compress=True)
+    mem = Memory(location='joblib_cache_hdfs', backend='hdfs',
+                 verbose=100, compress=True,
+                 store_options=dict(host='namenode', port=9000, user='test'))
     mem.clear()
     multiply = mem.cache(np.multiply)
     array1 = np.arange(1000)
