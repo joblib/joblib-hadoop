@@ -7,7 +7,7 @@ test:
 	pytest
 
 install:
-	pip install -r requirements.txt .
+	pip install -r requirements.txt -r requirements-tests.txt .
 
 run-examples:
 	cd docker && \

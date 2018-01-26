@@ -1,0 +1,10 @@
+# Numerical dependencies used by tests
+numpy
+
+# For tests
+pytest
+pytest-cov
+pytest-pep8
+pytest-env
+codecov
+tox
