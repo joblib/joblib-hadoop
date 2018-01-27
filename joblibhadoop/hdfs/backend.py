@@ -7,6 +7,10 @@ import hdfs3
 from joblib._store_backends import (StoreBackendBase, StoreBackendMixin,
                                     CacheItemInfo)
 
+DEFAULT_BACKEND_OPTIONS = dict(host='localhost', port=9000, user=None,
+                               ticket_cache=None, token=None, pars=None,
+                               connect=True)
+
 
 class HDFSStoreBackend(StoreBackendBase, StoreBackendMixin):
     """A StoreBackend for Hadoop storage file system (HDFS)."""
@@ -32,11 +36,11 @@ class HDFSStoreBackend(StoreBackendBase, StoreBackendMixin):
         """Return the whole list of items available in cache."""
         cache_items = []
         try:
-            self.storage.ls(self._location)
+            self.storage.ls(self.location)
         except IOError:
             return []
 
-        for path in self.storage.walk(self._location):
+        for path in self.storage.walk(self.location):
             is_cache_hash_dir = re.match('[a-f0-9]{32}$',
                                          os.path.basename(path))
 
@@ -58,50 +62,29 @@ class HDFSStoreBackend(StoreBackendBase, StoreBackendMixin):
 
         return cache_items
 
-    def _prepare_options(self, store_options):
-        if 'host' not in store_options:
-            store_options['host'] = 'localhost'
+    def _check_options(self, options):
+        for k, v in DEFAULT_BACKEND_OPTIONS.items():
+            if k not in options:
+                options[k] = v
 
-        if 'port' not in store_options:
-            store_options['port'] = 9000
-
-        if 'user' not in store_options:
-            store_options['user'] = None
-
-        if 'ticket_cache' not in store_options:
-            store_options['ticket_cache'] = None
-
-        if 'token' not in store_options:
-            store_options['token'] = None
-
-        if 'pars' not in store_options:
-            store_options['pars'] = None
-
-        if 'connect' not in store_options:
-            store_options['connect'] = True
-
-        return store_options
+        return options
 
     def configure(self, location, verbose=0,
-                  store_options=dict(host='localhost', port=9000, user=None,
-                                     ticket_cache=None, token=None, pars=None,
-                                     connect=True)):
+                  backend_options=DEFAULT_BACKEND_OPTIONS):
         """Configure the store backend."""
 
-        store_options = self._prepare_options(store_options)
+        options = self._check_options(backend_options.copy())
         self.storage = hdfs3.HDFileSystem(
-            host=store_options['host'], port=store_options['port'],
-            user=store_options['user'],
-            ticket_cache=store_options['ticket_cache'],
-            token=store_options['token'], pars=store_options['pars'],
-            connect=store_options['connect'])
+            host=options['host'], port=options['port'], user=options['user'],
+            ticket_cache=options['ticket_cache'], token=options['token'],
+            pars=options['pars'], connect=options['connect'])
         if location.startswith('/'):
             location = location[1:]
-        self._location = location
-        self.storage.mkdir(self._location)
+        self.location = location
+        self.storage.mkdir(self.location)
 
         # computation results can be stored compressed for faster I/O
-        self.compress = store_options['compress']
+        self.compress = options['compress']
 
         # Memory map mode is not supported
         self.mmap_mode = None
