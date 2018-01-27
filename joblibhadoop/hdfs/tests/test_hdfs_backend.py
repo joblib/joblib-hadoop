@@ -34,10 +34,10 @@ def test_store_and_retrieve(capsys, tmpdir, compress, arg):
 
     mem = Memory(location=tmpdir.strpath[1:], backend='hdfs',
                  verbose=0, compress=compress,
-                 store_options=dict(host=NAMENODE, user='test'))
+                 backend_options=dict(host=NAMENODE, user='test'))
 
-    assert mem.store_backend._location == os.path.join(tmpdir.strpath[1:],
-                                                       "joblib")
+    assert mem.store_backend.location == os.path.join(tmpdir.strpath[1:],
+                                                      "joblib")
 
     func = mem.cache(func)
 
@@ -72,10 +72,10 @@ def test_root_location_replacement(tmpdir):
     register_hdfs_store_backend()
 
     mem = Memory(location=location, backend='hdfs', verbose=100,
-                 store_options=dict(host=NAMENODE, user='test'))
+                 backend_options=dict(host=NAMENODE, user='test'))
 
-    assert mem.store_backend._location == os.path.join(tmpdir.strpath[1:],
-                                                       "joblib")
+    assert mem.store_backend.location == os.path.join(tmpdir.strpath[1:],
+                                                      "joblib")
 
 
 def test_passing_backend_base_to_memory(tmpdir):
@@ -84,15 +84,15 @@ def test_passing_backend_base_to_memory(tmpdir):
     register_hdfs_store_backend()
 
     mem = Memory(location=tmpdir.strpath, backend='hdfs', verbose=100,
-                 store_options=dict(host=NAMENODE, user='test'))
+                 backend_options=dict(host=NAMENODE, user='test'))
 
-    assert mem.store_backend._location == os.path.join(tmpdir.strpath[1:],
-                                                       "joblib")
+    assert mem.store_backend.location == os.path.join(tmpdir.strpath[1:],
+                                                      "joblib")
 
     mem2 = Memory(location=mem.store_backend, backend='hdfs', verbose=100,
-                  store_options=dict(host=NAMENODE, user='test'))
+                  backend_options=dict(host=NAMENODE, user='test'))
 
-    assert mem2.store_backend._location == mem.store_backend._location
+    assert mem2.store_backend.location == mem.store_backend.location
 
 
 def test_clear_cache(tmpdir):
@@ -106,13 +106,13 @@ def test_clear_cache(tmpdir):
 
     mem = Memory(location=tmpdir.strpath, backend='hdfs',
                  verbose=100, compress=False,
-                 store_options=dict(host=NAMENODE, user='test'))
+                 backend_options=dict(host=NAMENODE, user='test'))
     cached_func = mem.cache(func)
     cached_func("test")
 
     mem.clear()
 
-    assert not mem.store_backend._item_exists(mem.store_backend._location)
+    assert not mem.store_backend._item_exists(mem.store_backend.location)
 
 
 def test_get_items(tmpdir):
@@ -125,7 +125,7 @@ def test_get_items(tmpdir):
 
     mem = Memory(location=tmpdir.strpath, backend='hdfs',
                  verbose=100, compress=False,
-                 store_options=dict(host=NAMENODE, user='test'))
+                 backend_options=dict(host=NAMENODE, user='test'))
     assert not mem.store_backend.get_items()
 
     cached_func = mem.cache(func)
