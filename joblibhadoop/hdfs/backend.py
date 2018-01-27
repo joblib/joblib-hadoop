@@ -63,7 +63,7 @@ class HDFSStoreBackend(StoreBackendBase, StoreBackendMixin):
         return cache_items
 
     def _check_options(self, options):
-        for k, v in DEFAULT_BACKEND_OPTIONS:
+        for k, v in DEFAULT_BACKEND_OPTIONS.items():
             if k not in options:
                 options[k] = v
 
