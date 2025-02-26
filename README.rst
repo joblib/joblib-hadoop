@@ -1,3 +1,18 @@
+============
+UNMAINTAINED
+============
+
+This repository has been unmaintained for several years. Making the tests pass
+again requires significant work to update the configuration to use more
+versions of the base docker images and dependencies.
+
+Furthermore, it depends on https://github.com/dask/hdfs3 which is also
+unmaintained and would therefore require significant code rewrite to switch to
+pyarrow.
+
+Since there was very little adoption of this project. It was decided to mark it as
+officially archived on 2025-02-26.
+
 Joblib-hadoop
 =============
 
